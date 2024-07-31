@@ -1,5 +1,5 @@
 export type BookingDto = {
-  id: string;
+  id?: string;
   hotel: string;
   location: string;
   crossDeviceTransactionId: string;
