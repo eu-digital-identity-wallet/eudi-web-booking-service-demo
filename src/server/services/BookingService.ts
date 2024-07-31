@@ -1,15 +1,17 @@
-import { AppMapper } from "@/mappings";
-import { BookingDto } from "@/shared";
+import { bookingSchema } from "@/schemas";
+import type { BookingDto } from "@/shared";
 import { Booking } from "@prisma/client";
 import axios from "axios";
 import { Inject, Service } from "typedi";
+import { ValidateInput } from "../decorators";
 import { BookingRepository } from "../repositories";
+import { MapperService } from "./MapperService";
 
 @Service()
 export class BookingService {
   constructor(
     @Inject() private readonly bookingRepository: BookingRepository,
-    @Inject() private mapper: AppMapper
+    @Inject() private mapper: MapperService
   ) {}
 
   async findAll(): Promise<BookingDto[]> {
@@ -24,6 +26,7 @@ export class BookingService {
     return mappedData;
   }
 
+  @ValidateInput(bookingSchema)
   async create(request: BookingDto): Promise<string> {
     const verificationData = await this.initVerification();
 

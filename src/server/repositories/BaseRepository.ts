@@ -1,27 +1,27 @@
-import { Service } from "typedi";
-import { IRepository } from "./interfaces";
+import { PrismaClient } from "@prisma/client";
+import "reflect-metadata";
+import { Inject, Service } from "typedi";
+
+// Define a generic interface for repository operations
+export interface IRepository<T> {
+  findAll(): Promise<T[]>;
+  findById(id: string): Promise<T | null>;
+  create(entity: T): Promise<T>;
+  update(id: string, entity: Partial<T>): Promise<T>;
+  delete(id: string): Promise<T>;
+}
 
 @Service()
-export class BaseRepository<T> implements IRepository<T> {
-  constructor(protected readonly model: any) {}
+export abstract class BaseRepository<T> implements IRepository<T> {
+  protected readonly prisma: PrismaClient;
 
-  async findById(id: number): Promise<T | null> {
-    return this.model.findUnique({ where: { id } });
+  constructor(@Inject() prismaClient: PrismaClient) {
+    this.prisma = prismaClient;
   }
 
-  async findAll(): Promise<T[]> {
-    return this.model.findMany();
-  }
-
-  async create(data: T): Promise<T> {
-    return this.model.create({ data });
-  }
-
-  async update(id: number, data: Partial<T>): Promise<T> {
-    return this.model.update({ where: { id }, data });
-  }
-
-  async delete(id: number): Promise<void> {
-    await this.model.delete({ where: { id } });
-  }
+  abstract findAll(): Promise<T[]>;
+  abstract findById(id: string): Promise<T | null>;
+  abstract create(entity: T): Promise<T>;
+  abstract update(id: string, entity: Partial<T>): Promise<T>;
+  abstract delete(id: string): Promise<T>;
 }
