@@ -12,6 +12,10 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "target": "ESNext",
     "plugins": [
       {
         "name": "next"

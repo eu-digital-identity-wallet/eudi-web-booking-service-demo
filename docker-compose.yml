@@ -1,34 +1,24 @@
 version: '3.7'
 
 services:
-  db:
-    image: mysql:8
-    volumes:
-      - mysql_data:/var/lib/mysql
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
-      MYSQL_USER: username
-      MYSQL_PASSWORD: password
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      DATABASE_URL: mysql://username:password@db:3306/mydatabase
-    depends_on:
-      - db
-
-  nginx:
-    image: nginx:alpine
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     ports:
-      - '80:80'
+      - '5432:5432'
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - app
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - eudiw
+
+networks:
+  eudiw:
+    driver: bridge
 
 volumes:
-  mysql_data:
-    driver: local
+  postgres-data:
