@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:8
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: mysql://username:password@db:3306/mydatabase
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+
+volumes:
+  mysql_data:
+    driver: local
