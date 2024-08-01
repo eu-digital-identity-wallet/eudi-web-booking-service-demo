@@ -72,6 +72,7 @@ export class BookingService {
       presentation_definition_mode: "by_reference",
       nonce: "eaaace85-4d77-45dc-b57a-9043a548ab86",
     };
+// for same device we have to add  "wallet_response_redirect_uri_template": "https://dev.verifier.eudiw.dev/get-wallet-code?response_code={RESPONSE_CODE}"
 
     const response = await axios.post(
       "https://dev.verifier-backend.eudiw.dev/ui/presentations",
