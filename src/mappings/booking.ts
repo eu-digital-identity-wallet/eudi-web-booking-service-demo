@@ -50,10 +50,6 @@ export const bookingMap = (mapper: Mapper) => {
     "BookingDto",
     "Booking",
     forMember(
-      (destination) => destination.id,
-      mapFrom((source) => source.id)
-    ),
-    forMember(
       (destination) => destination.hotel,
       mapFrom((source) => source.hotel)
     ),

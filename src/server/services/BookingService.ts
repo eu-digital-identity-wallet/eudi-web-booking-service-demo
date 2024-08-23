@@ -1,4 +1,4 @@
-import { bookingSchema } from "@/schemas";
+import { bookingCreateSchema } from "@/schemas";
 import type { BookingDto } from "@/shared";
 import { Booking } from "@prisma/client";
 import axios from "axios";
@@ -26,8 +26,9 @@ export class BookingService {
     return mappedData;
   }
 
-  @ValidateInput(bookingSchema)
+  @ValidateInput(bookingCreateSchema)
   async create(request: BookingDto): Promise<string> {
+    console.log(request);
     const verificationData = await this.initVerification();
 
     request.crossDeviceTransactionId = verificationData.presentationId;

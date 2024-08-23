@@ -17,6 +17,7 @@ export async function POST(request: Request) {
     const booking = await bookingService.create(data);
     return NextResponse.json(booking, { status: 201 });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Failed to create booking" },
       { status: 500 }

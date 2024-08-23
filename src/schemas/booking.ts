@@ -6,8 +6,7 @@ const isISODate = (dateString: string): boolean => {
   return isoDatePattern.test(dateString);
 };
 
-export const bookingSchema = z.object({
-  id: z.string().optional(),
+export const bookingCreateSchema = z.object({
   hotel: z.string().min(1).max(100),
   location: z.string().min(1).max(100),
   crossDeviceTransactionId: z.string().optional(),
@@ -21,3 +20,7 @@ export const bookingSchema = z.object({
     message: "Invalid date format. Must be ISO 8601 date string.",
   }),
 });
+
+export const bookingUpdateSchema = bookingCreateSchema.extend({
+  id: z.string().optional(),
+})
