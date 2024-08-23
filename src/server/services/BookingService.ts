@@ -35,8 +35,9 @@ export class BookingService {
     const data = this.mapper
       .get()
       .map<BookingDto, Booking>(request, "BookingDto", "Booking");
-    await this.bookingRepository.create(data);
-
+    const dbRecord = await this.bookingRepository.create(data);
+    console.log(dbRecord);
+    //TODO error handling {statusCode, message}
     return verificationData.requestUri;
   }
 
