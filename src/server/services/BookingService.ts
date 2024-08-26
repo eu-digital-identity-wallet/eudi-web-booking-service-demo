@@ -1,17 +1,18 @@
 import { bookingCreateSchema } from "@/schemas";
 import type { BookingDto } from "@/shared";
 import { Booking } from "@prisma/client";
-import axios from "axios";
 import { Inject, Service } from "typedi";
 import { ValidateInput } from "../decorators";
 import { BookingRepository } from "../repositories";
 import { MapperService } from "./MapperService";
+import { VerifierService } from "./VerifierService";
 
 @Service()
 export class BookingService {
   constructor(
     @Inject() private readonly bookingRepository: BookingRepository,
-    @Inject() private mapper: MapperService
+    @Inject() private mapper: MapperService,
+    @Inject() private verifier: VerifierService
   ) {}
 
   async findAll(): Promise<BookingDto[]> {
@@ -29,64 +30,27 @@ export class BookingService {
   @ValidateInput(bookingCreateSchema)
   async create(request: BookingDto): Promise<string> {
     console.log(request);
-    const verificationData = await this.initVerification();
+    const verificationData = await this.verifier.initVerification();
 
     request.crossDeviceTransactionId = verificationData.presentationId;
     const data = this.mapper
       .get()
-      .map<BookingDto, Booking>(request, "BookingDto", "Booking");
+      .map<BookingDto, Booking>(request, "BookingDto", "Booking"); 
+      /* TODO : change DTO to 
+      {
+          "hotel": "Grand hotel",
+          "location": "The city",
+          "numberOfGuests": 3,
+          "numberOfRooms": 3,
+          "checkIn": "2011-10-05T14:48:00.000Z",
+          "checkOut": "2011-12-05T14:48:00.000Z"
+      }
+      */
     const dbRecord = await this.bookingRepository.create(data);
     console.log(dbRecord);
     //TODO error handling {statusCode, message}
     return verificationData.requestUri;
   }
 
-  private async initVerification(): Promise<{
-    requestUri: string;
-    presentationId: string;
-  }> {
-    const payload = {
-      type: "vp_token",
-      presentation_definition: {
-        id: "876a562d-3a45-4fde-90b6-7a2b806a156e",
-        input_descriptors: [
-          {
-            id: "eu.europa.ec.eudi.pid.1",
-            name: "EUDI PID",
-            purpose: "We need to verify your identity",
-            format: {
-              mso_mdoc: {
-                alg: ["ES256", "ES384", "ES512"],
-              },
-            },
-            constraints: {
-              fields: [
-                {
-                  path: ["$['eu.europa.ec.eudi.pid.1']['family_name']"],
-                  intent_to_retain: false,
-                },
-              ],
-            },
-          },
-        ],
-      },
-      jar_mode: "by_reference",
-      presentation_definition_mode: "by_reference",
-      nonce: "eaaace85-4d77-45dc-b57a-9043a548ab86",
-    };
-// for same device we have to add  "wallet_response_redirect_uri_template": "https://dev.verifier.eudiw.dev/get-wallet-code?response_code={RESPONSE_CODE}"
-
-    const response = await axios.post(
-      "https://dev.verifier-backend.eudiw.dev/ui/presentations",
-      payload,
-      { headers: { "Content-Type": "application/json" } }
-    );
-    const clientId = encodeURIComponent(response.data.client_id);
-    const requestURI = encodeURIComponent(response.data.request_uri);
-    const presentationId = encodeURIComponent(response.data.presentation_id);
-
-    const requestUri = `eudi-openid4vp://?client_id=${clientId}&request_uri=${requestURI}`;
-
-    return { requestUri, presentationId };
-  }
+  
 }
