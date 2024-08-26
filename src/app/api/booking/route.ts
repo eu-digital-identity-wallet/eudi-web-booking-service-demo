@@ -4,7 +4,7 @@ import Container from "typedi";
 
 const bookingService = Container.get(BookingService);
 
-export async function GET() {
+export async function GET() { //TODO return data for specific ID 
   const bookings = await bookingService.findAll();
   console.log("bookings", bookings);
 

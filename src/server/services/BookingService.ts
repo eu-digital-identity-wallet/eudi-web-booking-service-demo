@@ -31,8 +31,10 @@ export class BookingService {
   async create(request: BookingDto): Promise<string> {
     console.log(request);
     const verificationData = await this.verifier.initVerification();
-
+    //TODO if desktop 
     request.crossDeviceTransactionId = verificationData.presentationId;
+    //TODO if mobile 
+    //request.sameDeviceTransactionId = verificationData.presentationId;
     const data = this.mapper
       .get()
       .map<BookingDto, Booking>(request, "BookingDto", "Booking"); 

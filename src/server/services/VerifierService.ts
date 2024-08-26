@@ -1,5 +1,6 @@
 import { Service } from "typedi";
 import axios from "axios";
+import { promise } from "zod";
 
 @Service()
 export class VerifierService {
@@ -52,4 +53,11 @@ export class VerifierService {
 
     return { requestUri, presentationId };
   }
+//TODO 
+//   public async confirmVerification():  Promise<{
+//     requestUri: string;
+//     presentationId: string;
+//   }> {
+      
+//    }
 }
