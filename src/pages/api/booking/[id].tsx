@@ -12,13 +12,10 @@ export default async function handler(
   if (req.method === "GET") {
     try {
       const id = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
-
       if (!id) {
         return res.status(400).json({ error: "ID is required" });
       }
       const booking = await bookingService.bookingDetails(id);
-      console.log("booking", booking);
-
       return res.status(200).json(booking);
     } catch (error) {
       console.error(error);
