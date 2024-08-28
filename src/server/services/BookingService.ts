@@ -34,19 +34,22 @@ export class BookingService {
   @ValidateInput(bookingCreateDtoValidationSchecma)
   async create(bookingCreateDto: BookingCreateDto, isMobile:boolean ): Promise<{}> {
     console.log(bookingCreateDto);
-    
-    const verificationData = await this.verifier.initVerification(isMobile);
+    const mappedData = this.mapper.map<BookingCreateDto, Booking>(bookingCreateDto, "bookingCreateDto", "Booking"); 
+    const newBooking = await this.bookingRepository.create(mappedData);
+    console.log(newBooking);
+    const verificationData = await this.verifier.initVerification(newBooking.id,isMobile);
     console.log(verificationData);
    
     if(isMobile){
-      bookingCreateDto.sameDeviceTransactionId = verificationData.TransactionId;
+      newBooking.sameDeviceTransactionId = verificationData.TransactionId;
     }else{
-      bookingCreateDto.crossDeviceTransactionId = verificationData.TransactionId;
+      newBooking.crossDeviceTransactionId = verificationData.TransactionId;
     }
-     
-    const mappedData = this.mapper.map<BookingCreateDto, Booking>(bookingCreateDto, "bookingCreateDto", "Booking"); 
+    
+    const updateBooking = await this.bookingRepository.update(newBooking.id,newBooking);
+
       
-    const newBooking = await this.bookingRepository.create(mappedData);
+    console.log(updateBooking);
      
     return {"url":verificationData.requestUri,"bookingId":newBooking.id};
   }

@@ -18,7 +18,7 @@ export default async function handler(
       }
 
       const bookingVerificationStatus = await bookingService.bookingVerificationStatus(id);
-      console.log("bookings", bookingVerificationStatus);
+      console.log("bookingVerificationStatus", bookingVerificationStatus);
 
       return res.status(200).json({"status":bookingVerificationStatus});
     } catch (error) {
