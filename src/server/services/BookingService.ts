@@ -1,5 +1,5 @@
-import { bookingCreateUserInputSchema } from "@/schemas";
-import type { BookingDto } from "@/shared";
+import { bookingCreateDtoValidationSchecma } from "@/schemas";
+import type { BookingCreateDto, BookingDto } from "@/shared";
 import { Booking } from "@prisma/client";
 import { Inject, Service } from "typedi";
 import { ValidateInput } from "../decorators";
@@ -9,6 +9,7 @@ import { VerifierService } from "./VerifierService";
 
 @Service()
 export class BookingService {
+
   constructor(
     @Inject() private readonly bookingRepository: BookingRepository,
     @Inject() private mapper: MapperService,
@@ -19,31 +20,29 @@ export class BookingService {
     const records = await this.bookingRepository.findAll();
 
     const mappedData = records.map((record) =>
-      this.mapper
-        .get()
-        .map<Booking, BookingDto>(record, "Booking", "BookingDto")
+      this.mapper.map<Booking, BookingDto>(record, "Booking", "BookingDto")
     );
 
     return mappedData;
   }
 
-  @ValidateInput(bookingCreateUserInputSchema)
-  async create(request: BookingDto): Promise<string> {
-    console.log(request);
+  @ValidateInput(bookingCreateDtoValidationSchecma)
+  async create(bookingCreateDto: BookingCreateDto): Promise<{}> {
+    console.log(bookingCreateDto);
     const verificationData = await this.verifier.initVerification();
+    console.log(verificationData);
     //TODO if desktop 
-    request.crossDeviceTransactionId = verificationData.presentationId;
+    bookingCreateDto.crossDeviceTransactionId = verificationData.TransactionId;
     //TODO if mobile 
-    //request.sameDeviceTransactionId = verificationData.presentationId;
-    const data = this.mapper
-      .get()
-      .map<BookingDto, Booking>(request, "BookingDto", "Booking"); 
+    //request.sameDeviceTransactionId = verificationData.TransactionId;
+    const mappedData = this.mapper.map<BookingCreateDto, Booking>(bookingCreateDto, "bookingCreateDto", "Booking"); 
       
-    const dbRecord = await this.bookingRepository.create(data);
-    console.log(dbRecord);
-    //TODO error handling {statusCode, message}
-    return verificationData.requestUri;
+    const newBooking = await this.bookingRepository.create(mappedData);
+    console.log(newBooking);
+    return {"url":verificationData.requestUri,"bookingId":newBooking.id};
   }
-
-  
+  //TODO: implement validate 
+  async bookingStatus() : Promise<string> {
+    throw new Error("Method not implemented.");
+  }
 }

@@ -7,15 +7,14 @@ export const mapper = createMapper({ strategyInitializer: pojos() });
 
 @Service({ global: true })
 export class MapperService {
-  private mapper: Mapper;
+  private mapper: Mapper = mapper; // Initialize directly
 
   constructor() {
-    this.mapper = mapper;
-    this.createMaps();
+     this.createMaps();
   }
 
-  get() {
-    return this.mapper;
+  map<TSource, TDestination>(source: TSource, sourceKey: string, destinationKey: string): TDestination {
+    return this.mapper.map<TSource, TDestination>(source, sourceKey, destinationKey);
   }
 
   private createMaps() {

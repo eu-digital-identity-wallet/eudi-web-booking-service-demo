@@ -6,7 +6,7 @@ const isISODate = (dateString: string): boolean => {
   return isoDatePattern.test(dateString);
 };
 
-export const bookingCreateUserInputSchema = z.object({
+export const bookingCreateDtoValidationSchecma = z.object({
   hotel: z.string().min(1).max(100),
   location: z.string().min(1).max(100),
   numberOfGuests: z.number().min(1).max(10),

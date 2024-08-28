@@ -7,7 +7,7 @@ export class VerifierService {
 
   public async initVerification(): Promise<{
     requestUri: string;
-    presentationId: string;
+    TransactionId: string;
   }> {
     const payload = {
       type: "vp_token",
@@ -47,11 +47,11 @@ export class VerifierService {
     );
     const clientId = encodeURIComponent(response.data.client_id);
     const requestURI = encodeURIComponent(response.data.request_uri);
-    const presentationId = encodeURIComponent(response.data.presentation_id);
+    const TransactionId = encodeURIComponent(response.data.presentation_id);
 
     const requestUri = `eudi-openid4vp://?client_id=${clientId}&request_uri=${requestURI}`;
 
-    return { requestUri, presentationId };
+    return { requestUri, TransactionId };
   }
 //TODO 
 //   public async confirmVerification():  Promise<{
