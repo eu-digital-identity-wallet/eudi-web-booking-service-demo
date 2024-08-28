@@ -17,7 +17,7 @@ export class BookingService {
     @Inject() private verifier: VerifierService
   ) {}
 
-  private async findById(bookingID:string): Promise<BookingDto> {
+  protected async findById(bookingID:string): Promise<BookingDto> {
     if(!bookingID){
       throw new Error("Booking Id is needed.");
     }
@@ -32,13 +32,13 @@ export class BookingService {
   }
 
   @ValidateInput(bookingCreateDtoValidationSchecma)
-  async create(bookingCreateDto: BookingCreateDto, isMobile:boolean ): Promise<{}> {
-    console.log(bookingCreateDto);
+  public async create(bookingCreateDto: BookingCreateDto, isMobile:boolean ): Promise<{}> {
+     
     const mappedData = this.mapper.map<BookingCreateDto, Booking>(bookingCreateDto, "bookingCreateDto", "Booking"); 
     const newBooking = await this.bookingRepository.create(mappedData);
-    console.log(newBooking);
+    
     const verificationData = await this.verifier.initVerification(newBooking.id,isMobile);
-    console.log(verificationData);
+   
    
     if(isMobile){
       newBooking.sameDeviceTransactionId = verificationData.TransactionId;
@@ -55,20 +55,18 @@ export class BookingService {
   }
 
   @ValidateInput(bookingIdSchema)
-  async bookingVerificationStatus(bookingID:string) : Promise<boolean> {
+  public async bookingVerificationStatus(bookingID:string) : Promise<boolean> {
     const booking = await this.findById(bookingID);
     const verificationStatus = await this.verifier.checkVerification(booking.crossDeviceTransactionId);
      
     return verificationStatus;
-    //throw new Error("Method not implemented.");
   }
 
   @ValidateInput(bookingIdSchema)
-  async bookingDetails(bookingID:string) : Promise<BookingPublicDto> {
+  public async bookingDetails(bookingID:string) : Promise<BookingPublicDto> {
     const booking = await this.findById(bookingID);
     const mappedData = this.mapper.map<BookingDto, BookingPublicDto>(booking, "BookingDto", "BookingPublicDto"); 
 
     return mappedData;
-    //throw new Error("Method not implemented.");
   }
 }
