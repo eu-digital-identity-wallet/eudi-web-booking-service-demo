@@ -1,4 +1,4 @@
-import { bookingCreateDtoValidationSchecma } from "@/schemas";
+import { bookingCreateDtoValidationSchecma, bookingIdSchema } from "@/schemas";
 import type { BookingCreateDto, BookingDto } from "@/shared";
 import { Booking } from "@prisma/client";
 import { Inject, Service } from "typedi";
@@ -16,6 +16,7 @@ export class BookingService {
     @Inject() private verifier: VerifierService
   ) {}
 
+  @ValidateInput(bookingIdSchema)
   async findById(bookingID:string|undefined): Promise<BookingDto> {
     if(!bookingID){
       throw new Error("Booking Id is needed.");
@@ -46,7 +47,7 @@ export class BookingService {
     return {"url":verificationData.requestUri,"bookingId":newBooking.id};
   }
 
-  //TODO: implement validate 
+  @ValidateInput(bookingIdSchema)
   async bookingVerificationStatus(bookingID:string) : Promise<boolean> {
     console.log(bookingID);
     const booking = await this.findById(bookingID);

@@ -6,6 +6,9 @@ const isISODate = (dateString: string): boolean => {
   return isoDatePattern.test(dateString);
 };
 
+export const bookingIdSchema =  z.string().cuid({ message: "Invalid bookingId format" });
+
+
 export const bookingCreateDtoValidationSchecma = z.object({
   hotel: z.string().min(1).max(100),
   location: z.string().min(1).max(100),
