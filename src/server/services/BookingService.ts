@@ -7,6 +7,10 @@ import { BookingRepository } from "../repositories";
 import { MapperService } from "./MapperService";
 import { VerifierService } from "./VerifierService";
 
+type CreateResponse = {
+  url: string;
+  bookingId?:string;
+}
 
 @Service()
 export class BookingService {
@@ -49,9 +53,11 @@ export class BookingService {
     const updateBooking = await this.bookingRepository.update(newBooking.id,newBooking);
 
       
-    console.log(updateBooking);
-     
-    return {"url":verificationData.requestUri,"bookingId":newBooking.id};
+    const response:CreateResponse = {"url":verificationData.requestUri}
+    if(!isMobile){
+      response.bookingId = newBooking.id
+    }
+    return response;
   }
 
   @ValidateInput(bookingIdSchema)
