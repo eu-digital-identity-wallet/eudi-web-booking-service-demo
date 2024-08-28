@@ -1,11 +1,11 @@
 import { Service } from "typedi";
 import axios from "axios";
-import { promise } from "zod";
+import { object, promise } from "zod";
 
 @Service()
 export class VerifierService {
   
-  public async initVerification(): Promise<{
+  public async initVerification(isMobile:boolean): Promise<{
     requestUri: string;
     TransactionId: string;
   }> {
@@ -38,7 +38,15 @@ export class VerifierService {
       presentation_definition_mode: "by_reference",
       nonce: "eaaace85-4d77-45dc-b57a-9043a548ab86",
     };
-//TODO: for same device we have to add  "wallet_response_redirect_uri_template": "https://dev.verifier.eudiw.dev/get-wallet-code?response_code={RESPONSE_CODE}"
+    
+
+   if(isMobile){
+    // payload.wallet_response_redirect_uri_template= new object(); 
+    // payload.wallet_response_redirect_uri_template =  "https://localhost:3000/booking/verification/cm0dw02qc000h127gy8lvfd8q?response_code={RESPONSE_CODE}"
+   }
+
+    console.error(isMobile);
+//TODO: for same device we have to add  
 
     const response = await axios.post(
       "https://dev.verifier-backend.eudiw.dev/ui/presentations",
@@ -75,7 +83,7 @@ export class VerifierService {
       //     definition_id: '876a562d-3a45-4fde-90b6-7a2b806a156e',
       //     descriptor_map: [ [Object] ]
       //   }
-      // console.log(response.data);
+      console.log(response.data);
       return response.status===200; //if response.status equals to 200 means that is verified by user
     } catch (error) {
       console.error('Error fetching presentation:', error);

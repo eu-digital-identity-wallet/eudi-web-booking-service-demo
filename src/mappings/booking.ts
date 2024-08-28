@@ -84,7 +84,6 @@ export const bookingMap = (mapper: Mapper) => {
     )
   );
 
-
   createMap<BookingDto, BookingPublicDto>(
     mapper,
     "BookingDto",

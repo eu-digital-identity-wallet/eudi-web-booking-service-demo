@@ -7,6 +7,7 @@ import { BookingRepository } from "../repositories";
 import { MapperService } from "./MapperService";
 import { VerifierService } from "./VerifierService";
 
+
 @Service()
 export class BookingService {
 
@@ -31,14 +32,18 @@ export class BookingService {
   }
 
   @ValidateInput(bookingCreateDtoValidationSchecma)
-  async create(bookingCreateDto: BookingCreateDto): Promise<{}> {
+  async create(bookingCreateDto: BookingCreateDto, isMobile:boolean ): Promise<{}> {
     console.log(bookingCreateDto);
-    const verificationData = await this.verifier.initVerification();
+    
+    const verificationData = await this.verifier.initVerification(isMobile);
     console.log(verificationData);
-    //TODO if desktop 
-    bookingCreateDto.crossDeviceTransactionId = verificationData.TransactionId;
-    //TODO if mobile 
-    //request.sameDeviceTransactionId = verificationData.TransactionId;
+   
+    if(isMobile){
+      bookingCreateDto.sameDeviceTransactionId = verificationData.TransactionId;
+    }else{
+      bookingCreateDto.crossDeviceTransactionId = verificationData.TransactionId;
+    }
+     
     const mappedData = this.mapper.map<BookingCreateDto, Booking>(bookingCreateDto, "bookingCreateDto", "Booking"); 
       
     const newBooking = await this.bookingRepository.create(mappedData);

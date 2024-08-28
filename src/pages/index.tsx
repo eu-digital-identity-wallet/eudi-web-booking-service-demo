@@ -1,17 +1,18 @@
 import TravelBook from "@/components/TravelBook";
-import { deviceDetect } from "@/shared/deviceDetect";
+import { deviceDetect } from "@/helpers/deviceDetect";
 import useAppStore from "@/store/appStore";
 import { GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";
 import { useEffect } from "react";
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  return deviceDetect(context);
+export function getServerSideProps(context: GetServerSidePropsContext) {
+  const deviceType = deviceDetect(context.req.headers["user-agent"] ?? "");
+  return { props: { deviceType } } ;
 }
 
 export default function Home(props: AppProps) {
   const { setDeviceType } = useAppStore();
-
+ 
   useEffect(() => {
     setDeviceType(props.pageProps.deviceType);
   }, [props.pageProps.deviceType, setDeviceType]);

@@ -1,3 +1,4 @@
+import { deviceDetect } from "@/helpers/deviceDetect";
 import { BookingService } from "@/server/services";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Container from "typedi";
@@ -22,12 +23,13 @@ export default async function handler(
     if (!data) {
       return res.status(400).json({ error: "Request body is required" });
     }
-
+    const isMobile = deviceDetect(req.headers['user-agent'])==="mobile";
+    
     // Create a booking
-    const booking = await bookingService.create(data);
+    const booking = await bookingService.create(data,isMobile);
     return res.status(201).json(booking);
 
-  } catch (error: any) {
+  }catch (error: any) {
     console.error("Booking creation failed:", error.message);
     return res
       .status(500)
