@@ -11,11 +11,15 @@ export default async function handler(
   // Check the HTTP method
   if (req.method === "GET") {
     try {
-      // TODO: return data for specific ID
-      const bookings = await bookingService.findAll();
-      console.log("bookings", bookings);
+      const id = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
 
-      return res.status(200).json(bookings);
+      if (!id) {
+        return res.status(400).json({ error: "ID is required" });
+      }
+      const booking = await bookingService.findById(id);
+      console.log("booking", booking);
+
+      return res.status(200).json(booking);
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Failed to retrieve bookings" });

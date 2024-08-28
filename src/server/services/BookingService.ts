@@ -16,14 +16,18 @@ export class BookingService {
     @Inject() private verifier: VerifierService
   ) {}
 
-  async findAll(): Promise<BookingDto[]> {
-    const records = await this.bookingRepository.findAll();
+  async findById(bookingID:string|undefined): Promise<BookingDto> {
+    if(!bookingID){
+      throw new Error("Booking Id is needed.");
+    }
+    const record = await this.bookingRepository.findById(bookingID);
+    if(record){
+      const mappedData = this.mapper.map<Booking, BookingDto>(record, "Booking", "BookingDto");
 
-    const mappedData = records.map((record) =>
-      this.mapper.map<Booking, BookingDto>(record, "Booking", "BookingDto")
-    );
+      return mappedData;
+    }
 
-    return mappedData;
+    throw new Error("Booking not found.");
   }
 
   @ValidateInput(bookingCreateDtoValidationSchecma)
@@ -41,8 +45,15 @@ export class BookingService {
     console.log(newBooking);
     return {"url":verificationData.requestUri,"bookingId":newBooking.id};
   }
+
   //TODO: implement validate 
-  async bookingStatus() : Promise<string> {
-    throw new Error("Method not implemented.");
+  async bookingVerificationStatus(bookingID:string) : Promise<boolean> {
+    console.log(bookingID);
+    const booking = await this.findById(bookingID);
+    const verificationStatus = await this.verifier.checkVerification(booking.crossDeviceTransactionId);
+    console.log(verificationStatus);
+    verificationStatus
+    return verificationStatus;
+    //throw new Error("Method not implemented.");
   }
 }
