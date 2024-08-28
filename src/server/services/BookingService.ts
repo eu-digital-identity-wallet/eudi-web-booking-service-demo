@@ -27,9 +27,9 @@ export class BookingService {
     }
     const record = await this.bookingRepository.findById(bookingID);
     if(record){
-      const mappedData = this.mapper.map<Booking, BookingDto>(record, "Booking", "BookingDto");
+      const bookingDto = this.mapper.map<Booking, BookingDto>(record, "Booking", "BookingDto");
 
-      return mappedData;
+      return bookingDto;
     }
 
     throw new Error("Booking not found.");

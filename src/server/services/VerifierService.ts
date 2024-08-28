@@ -109,8 +109,21 @@ export class VerifierService {
       // console.log(response.data);
       return response.status===200; //if response.status equals to 200 means that is verified by user
     } catch (error) {
-       
-      return false;
+     
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 400) {
+          // Handle 400 error specifically if response.status equals to 400 means that is not verified by user
+          return false;
+        } else {
+          // Handle other errors
+          console.error('An error occurred:', error.message);
+        }
+      } else {
+        // Handle non-Axios errors (unlikely in this case)
+        console.error('Unexpected error:', error);
+      }
+      throw error; // Rethrow the error if needed
+      
     } 
   }
 
