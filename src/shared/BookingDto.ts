@@ -21,3 +21,13 @@ export type BookingDto = {
   checkOut: string;
 };
 
+export type BookingPublicDto = {
+  id:string;
+  hotel: string;
+  location: string;
+  numberOfGuests: number;
+  numberOfRooms: number;
+  checkIn: string;
+  checkOut: string;
+};
+

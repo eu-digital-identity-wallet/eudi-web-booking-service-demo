@@ -1,6 +1,6 @@
 import { Mapper, createMap, forMember, mapFrom } from "@automapper/core";
 
-import { BookingCreateDto, BookingDto } from "@/shared";
+import { BookingCreateDto, BookingDto, BookingPublicDto } from "@/shared";
 import { Booking } from "@prisma/client";
 
 export const bookingMap = (mapper: Mapper) => {
@@ -81,6 +81,41 @@ export const bookingMap = (mapper: Mapper) => {
     forMember(
       (destination) => destination.checkOut,
       mapFrom((source) => source.checkOut.toDateString())
+    )
+  );
+
+
+  createMap<BookingDto, BookingPublicDto>(
+    mapper,
+    "BookingDto",
+    "BookingPublicDto",
+    forMember(
+      (destination) => destination.id,
+      mapFrom((source) => source.id)
+    ),
+    forMember(
+      (destination) => destination.hotel,
+      mapFrom((source) => source.hotel)
+    ),
+    forMember(
+      (destination) => destination.location,
+      mapFrom((source) => source.location)
+    ),
+    forMember(
+      (destination) => destination.numberOfGuests,
+      mapFrom((source) => source.numberOfGuests)
+    ),
+    forMember(
+      (destination) => destination.numberOfRooms,
+      mapFrom((source) => source.numberOfRooms)
+    ),
+    forMember(
+      (destination) => destination.checkIn,
+      mapFrom((source) => source.checkIn)
+    ),
+    forMember(
+      (destination) => destination.checkOut,
+      mapFrom((source) => source.checkOut)
     )
   );
 };

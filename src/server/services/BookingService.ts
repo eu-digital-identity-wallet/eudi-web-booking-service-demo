@@ -1,5 +1,5 @@
 import { bookingCreateDtoValidationSchecma, bookingIdSchema } from "@/schemas";
-import type { BookingCreateDto, BookingDto } from "@/shared";
+import type { BookingCreateDto, BookingDto, BookingPublicDto } from "@/shared";
 import { Booking } from "@prisma/client";
 import { Inject, Service } from "typedi";
 import { ValidateInput } from "../decorators";
@@ -16,8 +16,7 @@ export class BookingService {
     @Inject() private verifier: VerifierService
   ) {}
 
-  @ValidateInput(bookingIdSchema)
-  async findById(bookingID:string|undefined): Promise<BookingDto> {
+  private async findById(bookingID:string): Promise<BookingDto> {
     if(!bookingID){
       throw new Error("Booking Id is needed.");
     }
@@ -43,18 +42,25 @@ export class BookingService {
     const mappedData = this.mapper.map<BookingCreateDto, Booking>(bookingCreateDto, "bookingCreateDto", "Booking"); 
       
     const newBooking = await this.bookingRepository.create(mappedData);
-    console.log(newBooking);
+     
     return {"url":verificationData.requestUri,"bookingId":newBooking.id};
   }
 
   @ValidateInput(bookingIdSchema)
   async bookingVerificationStatus(bookingID:string) : Promise<boolean> {
-    console.log(bookingID);
     const booking = await this.findById(bookingID);
     const verificationStatus = await this.verifier.checkVerification(booking.crossDeviceTransactionId);
-    console.log(verificationStatus);
-    verificationStatus
+     
     return verificationStatus;
+    //throw new Error("Method not implemented.");
+  }
+
+  @ValidateInput(bookingIdSchema)
+  async bookingDetails(bookingID:string) : Promise<BookingPublicDto> {
+    const booking = await this.findById(bookingID);
+    const mappedData = this.mapper.map<BookingDto, BookingPublicDto>(booking, "BookingDto", "BookingPublicDto"); 
+
+    return mappedData;
     //throw new Error("Method not implemented.");
   }
 }
