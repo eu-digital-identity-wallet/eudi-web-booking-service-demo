@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 import axios from "axios";
-import { decode  } from 'cbor-x';
-import { decodeBase64Url } from "@/helpers/base64";
+import { decode } from 'cbor-x';
+
 
 type Payload = {
   type: string;
@@ -28,6 +28,56 @@ type Payload = {
   wallet_response_redirect_uri_template?: string; // Optional property
 };
 
+
+// Your decoding logic here
+function decodeCborData(data: Uint8Array) {
+  try {
+      return decode(data);
+  } catch (error) {
+      console.error('Failed to decode CBOR:', error);
+      return null;
+  }
+}
+
+// Function to extract the family name from issuerSigned data
+function extractFamilyName(decodedData: any): string | null {
+  const issuerSigned = decodedData?.documents?.[0]?.issuerSigned;
+  
+  if (issuerSigned) {
+      const namespaces = issuerSigned.nameSpaces;
+      if (namespaces && namespaces["eu.europa.ec.eudi.pid.1"]) {
+          const elements = namespaces["eu.europa.ec.eudi.pid.1"];
+          
+          for (const element of elements) {
+              // Decode the CBOR encoded buffer if it exists
+              if (element.value) {
+                  const decodedElement = decode(element.value);
+ 
+                  // Now, check for the family_name in the decoded data
+                  if (decodedElement && decodedElement.elementIdentifier==='family_name') {
+                      return decodedElement.elementValue;
+                  }
+              }
+          }
+      }
+  }
+  return null;
+}
+
+/**
+* Converts a base64url or hex string into a Buffer.
+* @param input - The base64url or hex string to be converted.
+* @returns The corresponding Buffer.
+*/
+function decodeBase64OrHex(input: string): Buffer {
+  const base64Regex = /^[A-Za-z0-9-_]+$/;
+  if (base64Regex.test(input)) {
+      // Convert base64url to standard base64
+      const base64 = input.replace(/-/g, '+').replace(/_/g, '/');
+      return Buffer.from(base64, 'base64');
+  }
+  return Buffer.from(input, 'hex');
+}
 
 @Service()
 export class VerifierService {
@@ -67,7 +117,6 @@ export class VerifierService {
     };
     
     if(isMobile){
-      //TODO fix fixed url 
       payload.wallet_response_redirect_uri_template =  `https://localhost:3000/booking/verification/${bookingId}?response_code={RESPONSE_CODE}`;
     }
 
@@ -83,9 +132,9 @@ export class VerifierService {
 
     return { requestUri, TransactionId };
   }
- 
-  public async checkVerification(crossDeviceTransactionId: string) :Promise< boolean> {
-    if(!crossDeviceTransactionId){
+  
+  public async checkVerification(crossDeviceTransactionId: string): Promise<boolean> {
+    if (!crossDeviceTransactionId) {
       throw new Error("Undefined Transaction.");
     }
      
@@ -98,40 +147,36 @@ export class VerifierService {
         },
       });
 
-      // let data = decode(response.data.vp_token);
-      // console.log(data);
-      //TODO:  
-      // {
-      //   vp_token: 'o2d2ZXJzaW9uYzEuMGlkb2N1bWVudHOBo2dkb2NUeXBld2V1LmV1cm9wYS5lYy5ldWRpLnBpZC4xbGlzc3VlclNpZ25lZKJqbmFtZVNwYWNlc6F3ZXUuZXVyb3BhLmVjLmV1ZGkucGlkLjGB2BhYaKRmcmFuZG9tWCDIAtF_RDum3bl3KZMY7w4VSriElk83aPAPpsrO6YacwmhkaWdlc3RJRAFsZWxlbWVudFZhbHVlaE5pa29sYW9zcWVsZW1lbnRJZGVudGlmaWVya2ZhbWlseV9uYW1lamlzc3VlckF1dGiEQ6EBJqEYIVkC6DCCAuQwggJqoAMCAQICFHIybfZjCJp7UA-MPyamhcvCwtLKMAoGCCqGSM49BAMCMFwxHjAcBgNVBAMMFVBJRCBJc3N1ZXIgQ0EgLSBVVCAwMTEtMCsGA1UECgwkRVVESSBXYWxsZXQgUmVmZXJlbmNlIEltcGxlbWVudGF0aW9uMQswCQYDVQQGEwJVVDAeFw0yMzA5MDIxNzQyNTFaFw0yNDExMjUxNzQyNTBaMFQxFjAUBgNVBAMMDVBJRCBEUyAtIDAwMDExLTArBgNVBAoMJEVVREkgV2FsbGV0IFJlZmVyZW5jZSBJbXBsZW1lbnRhdGlvbjELMAkGA1UEBhMCVVQwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAARJBHzUHC0bpmqOtZBhZbDmk94bHOWvem1civd-0j3esn8q8L1MCColNqQkCPadXjJAYsmXS3D4-HB9scOshixYo4IBEDCCAQwwHwYDVR0jBBgwFoAUs2y4kRcc16QaZjGHQuGLwEDMlRswFgYDVR0lAQH_BAwwCgYIK4ECAgAAAQIwQwYDVR0fBDwwOjA4oDagNIYyaHR0cHM6Ly9wcmVwcm9kLnBraS5ldWRpdy5kZXYvY3JsL3BpZF9DQV9VVF8wMS5jcmwwHQYDVR0OBBYEFIHv9JxcgwpQpka-91B4WlM-P9ibMA4GA1UdDwEB_wQEAwIHgDBdBgNVHRIEVjBUhlJodHRwczovL2dpdGh1Yi5jb20vZXUtZGlnaXRhbC1pZGVudGl0eS13YWxsZXQvYXJjaGl0ZWN0dXJlLWFuZC1yZWZlcmVuY2UtZnJhbWV3b3JrMAoGCCqGSM49BAMCA2gAMGUCMEX62qLvLZVT67SIRNhkGtAqnjqOSit32uL0HnlfLy2QmwPygQmUa04tkoOtf8GhhQIxAJueTu1QEJ9fDrcALM-Ys_7kEUB-Ze4w-wEEvtZzguqD3h9cxIjmEBdkATInQ0BNClkCNtgYWQIxpmdkb2NUeXBld2V1LmV1cm9wYS5lYy5ldWRpLnBpZC4xZ3ZlcnNpb25jMS4wbHZhbGlkaXR5SW5mb6Nmc2lnbmVkwHQyMDI0LTA4LTI4VDA5OjA2OjU3Wml2YWxpZEZyb23AdDIwMjQtMDgtMjhUMDk6MDY6NTdaanZhbGlkVW50aWzAdDIwMjQtMTEtMjZUMDA6MDA6MDBabHZhbHVlRGlnZXN0c6F3ZXUuZXVyb3BhLmVjLmV1ZGkucGlkLjGnAFggnYOft0I1-ZOXN4gTFMK4VBTLyIsuNYzUnXep5dge2IEBWCDz8qaOSXzzMGvphRaiYAz_-NUoNyiGbwUMCk7dghbM5wJYIIz8WEmy7imIg2IocTB6vEau-3w0CmqgjOh-ZF6COn8GA1ggdpWdnb_yXBXDxdgg92HA06e5ltHWp1KGySoeb0tx7KwEWCCpUvxcQ9krnvdKTY9ubHsqnEAw_TnbkXBWlzCnQRuXNwVYIN46FtRyEWjZV_nuLZJl2LLHI8L6U6Kb7Swg9dXVBtsaBlggQ36GoHHufiZRKeLSGhnmEsqD7gcXLjk_4ir08C88tlltZGV2aWNlS2V5SW5mb6FpZGV2aWNlS2V5pAECIAEhWCBRga_RzJ_Oo0p5-l87RfmnSvk2qeSIUALW-LYe30BGRyJYIDaxGhCGnOMf4UWflbmO7G0wfk-xS3ZfNnobsopnxlfCb2RpZ2VzdEFsZ29yaXRobWdTSEEtMjU2WECp-9R66h3BhzavUi1u9WHdqI6W8lzuv-iAymDi3gnM5sjHb-lc7rqowvuf1t8NYsRHCBJQoc3W8r5tAw7nDuGibGRldmljZVNpZ25lZKJqbmFtZVNwYWNlc9gYQaBqZGV2aWNlQXV0aKFvZGV2aWNlU2lnbmF0dXJlhEOhASag9lhAdiKDYtUO_n6YCp1S7JNq8GjCU5GyB-oaCyxJFlZ49B4rXF9zjt2IWrQ-RwUKL4jEJZ1FJJO8RzygR5RvcY7zQmZzdGF0dXMA',
-      //   presentation_submission: {
-      //     id: '8B50041B-1F00-49F3-A8B6-F258E5BF0902',
-      //     definition_id: '876a562d-3a45-4fde-90b6-7a2b806a156e',
-      //     descriptor_map: [ [Object] ]
-      //   }
-      // console.log(response.data);
-      const cborData = decodeBase64Url(response.data.vp_token);
-      console.log('decodedBytes',cborData);
-      const decodedObject = decode(cborData);
-      console.log('decodedObject',decodedObject);
+      // Decode the received token
+      const buffer = decodeBase64OrHex(response.data.vp_token);
+      const decodedData = decodeCborData(buffer);
 
+      if (decodedData) {
+         
+        // Extract the family name from issuerSigned
+        const familyName = extractFamilyName(decodedData);
+        if (familyName) {
+          console.log('Family Name:', familyName);
+        } else {
+          console.log('Family Name: Family name not found');
+        }
+      } else {
+        console.log('Family Name: Family name not found');
+      }
 
-      return response.status===200; //if response.status equals to 200 means that is verified by user
+      return response.status === 200;
+
     } catch (error) {
-     
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.status === 400) {
-          // Handle 400 error specifically if response.status equals to 400 means that is not verified by user
           return false;
         } else {
-          // Handle other errors
           console.error('An error occurred:', error.message);
         }
       } else {
-        // Handle non-Axios errors (unlikely in this case)
         console.error('Unexpected error:', error);
       }
-      throw error; // Rethrow the error if needed
-      
-    } 
+      throw error;
+    }
   }
 }
