@@ -40,30 +40,47 @@ function decodeCborData(data: Uint8Array) {
 }
 
 // Function to extract the family name from issuerSigned data
+// Function to extract the family name from issuerSigned data
 function extractFamilyName(decodedData: any): string | null {
-  const issuerSigned = decodedData?.documents?.[0]?.issuerSigned;
-  
-  if (issuerSigned) {
+  try {
+      const issuerSigned = decodedData?.documents?.[0]?.issuerSigned;
+
+      if (!issuerSigned) {
+          console.warn("IssuerSigned data not found in the provided decodedData.");
+          return null;
+      }
+
       const namespaces = issuerSigned.nameSpaces;
-      if (namespaces && namespaces["eu.europa.ec.eudi.pid.1"]) {
-          const elements = namespaces["eu.europa.ec.eudi.pid.1"];
-          
-          for (const element of elements) {
-              // Decode the CBOR encoded buffer if it exists
-              if (element.value) {
-                  const decodedElement = decode(element.value);
- 
-                  // Now, check for the family_name in the decoded data
-                  if (decodedElement && decodedElement.elementIdentifier==='family_name') {
-                      return decodedElement.elementValue;
-                  }
+      if (!namespaces || !namespaces["eu.europa.ec.eudi.pid.1"]) {
+          console.warn("Expected namespace 'eu.europa.ec.eudi.pid.1' not found.");
+          return null;
+      }
+
+      const elements = namespaces["eu.europa.ec.eudi.pid.1"];
+      for (const element of elements) {
+          if (element.value) {
+              let decodedElement;
+              try {
+                  decodedElement = decode(element.value); // Assuming decode is a valid function
+              } catch (error) {
+                  console.error("Error decoding element value:", error);
+                  continue; // Skip to the next element if decoding fails
               }
+
+              if (decodedElement && decodedElement.elementIdentifier === 'family_name') {
+                  return decodedElement.elementValue;
+              }
+          } else {
+              console.warn("Element value is undefined or null. Skipping element.");
           }
       }
+  } catch (error) {
+      console.error("An unexpected error occurred:", error);
   }
+  
+  console.info("Family name not found in the provided data.");
   return null;
 }
-
 /**
 * Converts a base64url or hex string into a Buffer.
 * @param input - The base64url or hex string to be converted.
