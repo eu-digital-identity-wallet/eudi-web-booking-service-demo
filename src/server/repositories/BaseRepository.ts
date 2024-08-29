@@ -1,3 +1,4 @@
+import "@/helpers/prisma-client";
 import { PrismaClient } from "@prisma/client";
 import "reflect-metadata";
 import { Inject, Service } from "typedi";
