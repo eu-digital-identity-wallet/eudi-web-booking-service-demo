@@ -6,7 +6,7 @@ import { Booking } from "@prisma/client";
 export const bookingMap = (mapper: Mapper) => {
   createMap<BookingCreateDto, Booking>(
     mapper,
-    "bookingCreateDto",
+    "BookingCreateDto",
     "Booking",
     forMember(
       (destination) => destination.hotel,

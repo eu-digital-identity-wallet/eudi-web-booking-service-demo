@@ -21,7 +21,7 @@ export class BookingService {
     @Inject() private verifier: VerifierService
   ) {}
 
-  protected async findById(bookingID:string): Promise<BookingDto> {
+  private async findById(bookingID:string): Promise<BookingDto> {
     if(!bookingID){
       throw new Error("Booking Id is needed.");
     }
@@ -38,7 +38,7 @@ export class BookingService {
   @ValidateInput(bookingCreateDtoValidationSchecma)
   public async create(bookingCreateDto: BookingCreateDto, isMobile:boolean ): Promise<{}> {
      
-    const mappedData = this.mapper.map<BookingCreateDto, Booking>(bookingCreateDto, "bookingCreateDto", "Booking"); 
+    const mappedData = this.mapper.map<BookingCreateDto, Booking>(bookingCreateDto, "BookingCreateDto", "Booking"); 
     const newBooking = await this.bookingRepository.create(mappedData);
     
     const verificationData = await this.verifier.initVerification(newBooking.id,isMobile);
@@ -64,15 +64,15 @@ export class BookingService {
   public async bookingVerificationStatus(bookingID:string) : Promise<boolean> {
     const booking = await this.findById(bookingID);
     const verificationStatus = await this.verifier.checkVerification(booking.crossDeviceTransactionId);
-     
+    //TODO add to database vp_token & family name if confirmed
     return verificationStatus;
   }
 
   @ValidateInput(bookingIdSchema)
   public async bookingDetails(bookingID:string) : Promise<BookingPublicDto> {
     const booking = await this.findById(bookingID);
-    const mappedData = this.mapper.map<BookingDto, BookingPublicDto>(booking, "BookingDto", "BookingPublicDto"); 
+    const bookingPublicDto = this.mapper.map<BookingDto, BookingPublicDto>(booking, "BookingDto", "BookingPublicDto"); 
 
-    return mappedData;
+    return bookingPublicDto;
   }
 }
