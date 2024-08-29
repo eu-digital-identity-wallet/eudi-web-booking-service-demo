@@ -9,7 +9,6 @@ const HotelDescription: React.FC = () => {
   const deviceType = useAppStore((state) => state.deviceType);
   const { changeModalStatus } = useAppStore();
   const { createBooking } = useBookingStore();
-
   const handleBooking = async () => {
     await createBooking({
       hotel: "ABC hotel",

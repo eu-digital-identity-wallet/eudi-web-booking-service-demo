@@ -1,14 +1,35 @@
+import usePolling from "@/helpers/usePolling";
 import useAppStore, { ModalStatus } from "@/store/appStore";
 import { useBookingStore } from "@/store/bookingStore";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 import QRCode from "react-qr-code";
 
 const Modal: React.FC = () => {
   const { modal, changeModalStatus } = useAppStore();
-  const { verUrl } = useBookingStore();
+  const router = useRouter();
+
+  const { verUrl, bookingId, verificationResStatus, verifyBooking } =
+    useBookingStore();
+  const { data, error, loading, stopPolling, startPolling } =
+    usePolling(verifyBooking);
+  useEffect(() => {
+    if (bookingId && !verificationResStatus) {
+      startPolling(); // Start polling when the component mounts
+    }
+    return () => {
+      stopPolling();
+    };
+  }, [bookingId, verificationResStatus, stopPolling, startPolling]);
+
+  useEffect(() => {
+    if (verificationResStatus === true) {
+      changeModalStatus();
+      router.push(`/confirmation`); // Navigate to the new post page
+    }
+  }, [changeModalStatus, router, verificationResStatus]);
 
   if (modal === ModalStatus.CLOSE) return null;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-6 flex-col rounded-lg shadow-lg w-11/12 max-w-md">
