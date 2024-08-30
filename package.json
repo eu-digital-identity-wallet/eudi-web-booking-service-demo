@@ -23,6 +23,7 @@
     "react-qr-code": "^2.0.15",
     "react-toastify": "^10.0.5",
     "reflect-metadata": "^0.2.2",
+    "swr": "^2.2.5",
     "typedi": "^0.10.0",
     "zod": "^3.23.8",
     "zustand": "^4.5.5"

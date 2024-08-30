@@ -1,5 +1,5 @@
-import AppLayout from "@/components/AppLayout";
-import "@/styles/globals.css";
+import AppLayout from "@/client/components/AppLayout";
+import "@/client/styles/tailwind.css";
 import type { AppProps } from "next/app";
 import "react-toastify/dist/ReactToastify.css";
 

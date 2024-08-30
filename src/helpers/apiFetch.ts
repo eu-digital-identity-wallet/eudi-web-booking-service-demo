@@ -70,47 +70,6 @@ export async function post<T, U>(
 }
 
 /**
- * Sends a PUT request to the specified path with a request body.
- *
- * This function sends a PUT request to the provided `path` with the given `body` and optional
- * configuration. The `body` is serialized as JSON before being sent. It uses the `http` function
- * to handle the request and return the response.
- *
- * @template T - The type of the request body.
- * @template U - The expected type of the response data.
- * @param {string} path - The URL path for the PUT request.
- * @param {T} body - The request body to be sent with the PUT request.
- * @param {RequestInit} [config] - Optional configuration options for the PUT request.
- *
- * @returns {Promise<U>} - A Promise that resolves to the response data of type U.
- */
-export async function put<T, U>(
-  path: string,
-  body: T,
-  config?: RequestInit
-): Promise<U> {
-  const init = { method: "put", body: JSON.stringify(body), ...config };
-  return await http<U>(`${path}`, init);
-}
-
-/**
- * Sends a DELETE request to the specified path.
- *
- * This function sends a DELETE request to the provided `path` with optional configuration.
- * It uses the `http` function to handle the request and return the response.
- *
- * @template T - The expected type of the response data.
- * @param {string} path - The URL path for the DELETE request.
- * @param {RequestInit} [config] - Optional configuration options for the DELETE request.
- *
- * @returns {Promise<T>} - A Promise that resolves to the response data of type T.
- */
-export async function del<T>(path: string, config?: RequestInit): Promise<T> {
-  const init = { method: "delete", ...config };
-  return await http<T>(`${path}`, init);
-}
-
-/**
  * Object containing methods for making HTTP requests.
  *
  * This object provides convenience methods for making HTTP requests using the `http` function.
@@ -125,7 +84,5 @@ export async function del<T>(path: string, config?: RequestInit): Promise<T> {
  */
 export const apiFetch = {
   post,
-  put,
   get,
-  del,
 };

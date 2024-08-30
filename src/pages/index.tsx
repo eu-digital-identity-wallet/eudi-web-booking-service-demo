@@ -1,6 +1,6 @@
-import BookingCreate from "@/components/BookingCreate";
+import BookingCreate from "@/client/components/BookingCreate";
+import useAppStore from "@/client/store/appStore";
 import { deviceDetect } from "@/helpers/deviceDetect";
-import useAppStore from "@/store/appStore";
 import { GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";
 import { useEffect } from "react";

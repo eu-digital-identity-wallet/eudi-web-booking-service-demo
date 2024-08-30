@@ -1,6 +1,6 @@
-import { BookingCreateResponse } from "@/interfaces";
-import { bookingCreateDtoValidationSchecma, bookingIdSchema } from "@/schemas";
-import type { BookingCreateDto, BookingDto, BookingPublicDto } from "@/shared";
+import { bookingDtoSchema, bookingIdSchema } from "@/server/schemas";
+import type { BookingDto } from "@/shared";
+import { BookingCreateResponse } from "@/shared/interfaces";
 import { Booking } from "@prisma/client";
 import { Inject, Service } from "typedi";
 import { ValidateInput } from "../decorators";
@@ -16,32 +16,14 @@ export class BookingService {
     @Inject() private verifier: VerifierService
   ) {}
 
-  private async findById(bookingID: string): Promise<BookingDto> {
-    if (!bookingID) {
-      throw new Error("Booking Id is needed.");
-    }
-    const record = await this.bookingRepository.findById(bookingID);
-    if (record) {
-      const bookingDto = this.mapper.map<Booking, BookingDto>(
-        record,
-        "Booking",
-        "BookingDto"
-      );
-
-      return bookingDto;
-    }
-
-    throw new Error("Booking not found.");
-  }
-
-  @ValidateInput(bookingCreateDtoValidationSchecma)
+  @ValidateInput(bookingDtoSchema)
   public async create(
-    bookingCreateDto: BookingCreateDto,
+    bookingCreateDto: BookingDto,
     isMobile: boolean
-  ): Promise<{}> {
-    const mappedData = this.mapper.map<BookingCreateDto, Booking>(
+  ): Promise<BookingCreateResponse> {
+    const mappedData = this.mapper.map<BookingDto, Booking>(
       bookingCreateDto,
-      "BookingCreateDto",
+      "BookingDto",
       "Booking"
     );
     const newBooking = await this.bookingRepository.create(mappedData);
@@ -73,23 +55,29 @@ export class BookingService {
 
   @ValidateInput(bookingIdSchema)
   public async bookingVerificationStatus(bookingID: string): Promise<boolean> {
-    const booking = await this.findById(bookingID);
-    const verificationStatus = await this.verifier.checkVerification(
-      booking.crossDeviceTransactionId
-    );
-    //TODO add to database vp_token & family name if confirmed
-    return verificationStatus;
+    const record = await this.bookingRepository.findById(bookingID);
+    if (record?.crossDeviceTransactionId) {
+      const verificationStatus = await this.verifier.checkVerification(
+        record.crossDeviceTransactionId
+      );
+      //TODO add to database vp_token & family name if confirmed
+      return verificationStatus;
+    }
+    return false;
   }
 
   @ValidateInput(bookingIdSchema)
-  public async bookingDetails(bookingID: string): Promise<BookingPublicDto> {
-    const booking = await this.findById(bookingID);
-    const bookingPublicDto = this.mapper.map<BookingDto, BookingPublicDto>(
-      booking,
-      "BookingDto",
-      "BookingPublicDto"
-    );
+  public async bookingDetails(bookingID: string): Promise<BookingDto | null> {
+    const record = await this.bookingRepository.findById(bookingID);
+    if (record) {
+      const bookingPublicDto = this.mapper.map<Booking, BookingDto>(
+        record,
+        "Booking",
+        "BookingDto"
+      );
+      return bookingPublicDto;
+    }
 
-    return bookingPublicDto;
+    return null;
   }
 }
