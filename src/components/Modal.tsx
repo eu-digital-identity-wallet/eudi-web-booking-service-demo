@@ -9,21 +9,26 @@ const Modal: React.FC = () => {
   const { modal, changeModalStatus } = useAppStore();
   const router = useRouter();
 
-  const { verUrl, bookingId, verificationResStatus, verifyBooking } =
+  const { bookingCreateRes, verificationResStatus, verifyBookingAsync } =
     useBookingStore();
-  const { startPolling, stopPolling } = usePolling(verifyBooking);
+  const { startPolling, stopPolling } = usePolling(verifyBookingAsync);
   const handleCloseModal = () => {
     stopPolling();
     changeModalStatus();
   };
   useEffect(() => {
-    if (bookingId && !verificationResStatus) {
+    if (bookingCreateRes?.bookingId && !verificationResStatus) {
       startPolling(); // Start polling when the component mounts
     }
     return () => {
       stopPolling();
     };
-  }, [bookingId, verificationResStatus, stopPolling, startPolling]);
+  }, [
+    bookingCreateRes?.bookingId,
+    verificationResStatus,
+    stopPolling,
+    startPolling,
+  ]);
 
   useEffect(() => {
     if (verificationResStatus === true) {
@@ -40,7 +45,7 @@ const Modal: React.FC = () => {
           Verify your credentials
         </h2>
         <p className="text-black flex justify-center mb-4">
-          {verUrl && <QRCode value={verUrl} />}
+          {bookingCreateRes?.url && <QRCode value={bookingCreateRes.url} />}
         </p>
 
         <div className="flex justify-end">

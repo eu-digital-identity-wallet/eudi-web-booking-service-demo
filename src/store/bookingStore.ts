@@ -4,15 +4,25 @@ import { VerificationResponse } from "@/interfaces/VerificationResponse";
 import { BookingCreateDto } from "@/shared";
 import { create } from "zustand";
 import useAppStore from "./appStore";
-import { handleError, setLoadingAndError } from "./utils";
+
+const initialState: Omit<
+  IBookingStore,
+  "createBookingAsync" | "verifyBookingAsync"
+> = {
+  isBookingCreateLoading: false,
+  bookingCreateError: null,
+
+  verificationResStatus: false,
+  isVerifyLoading: false,
+  verifyError: null,
+};
 
 export const useBookingStore = create<IBookingStore>()((set, get) => ({
-  isLoading: false,
-  error: null,
-  verificationResStatus: false,
-  createBooking: async (newBooking: BookingCreateDto) => {
+  ...initialState,
+  createBookingAsync: async (newBooking: BookingCreateDto) => {
+    set({ isBookingCreateLoading: true });
+
     try {
-      setLoadingAndError(set, true);
       const res = await apiFetch.post<BookingCreateDto, BookingCreateResponse>(
         "api/booking/create",
         newBooking,
@@ -22,22 +32,29 @@ export const useBookingStore = create<IBookingStore>()((set, get) => ({
           },
         }
       );
+      set({ isBookingCreateLoading: false, bookingCreateRes: res });
 
-      set({
-        verUrl: res.url,
-        ...(res.bookingId && { bookingId: res.bookingId }),
-      });
       useAppStore.getState().changeModalStatus();
-      setLoadingAndError(set, false);
     } catch (err) {
-      handleError(set, err);
+      let errorMessage = "Unknown error occurred";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      }
+      set({
+        isBookingCreateLoading: false,
+        bookingCreateError: { message: errorMessage },
+      });
     }
   },
 
-  verifyBooking: async () => {
+  verifyBookingAsync: async () => {
+    set({ isVerifyLoading: true });
+
     try {
-      const bookingId = get().bookingId;
-      setLoadingAndError(set, true);
+      const bookingId = get().bookingCreateRes?.bookingId;
+
       const res = await apiFetch.get<VerificationResponse>(
         `api/booking/verification/${bookingId}`,
         {
@@ -46,11 +63,18 @@ export const useBookingStore = create<IBookingStore>()((set, get) => ({
           },
         }
       );
-
-      set({ verificationResStatus: res.status });
-      setLoadingAndError(set, false);
+      set({ isVerifyLoading: false, verificationResStatus: res.status });
     } catch (err) {
-      handleError(set, err);
+      let errorMessage = "Unknown error occurred";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      }
+      set({
+        isVerifyLoading: false,
+        verifyError: { message: errorMessage },
+      });
     }
   },
 }));

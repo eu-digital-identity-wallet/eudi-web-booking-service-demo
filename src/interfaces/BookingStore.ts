@@ -1,12 +1,16 @@
 import { BookingCreateDto } from "@/shared";
+import { BookingCreateResponse } from "./BookingCreateResponse";
 import { FetchError } from "./FetchError";
 
 export interface IBookingStore {
-  verUrl?: string;
-  bookingId?: string;
+  bookingCreateRes?: BookingCreateResponse;
+  isBookingCreateLoading: boolean;
+  bookingCreateError: FetchError | null;
+
   verificationResStatus: boolean;
-  isLoading: boolean;
-  error: FetchError | null;
-  createBooking: (newBooking: BookingCreateDto) => Promise<void>;
-  verifyBooking: () => Promise<void>;
+  isVerifyLoading: boolean;
+  verifyError: FetchError | null;
+
+  createBookingAsync: (newBooking: BookingCreateDto) => Promise<void>;
+  verifyBookingAsync: () => Promise<void>;
 }
