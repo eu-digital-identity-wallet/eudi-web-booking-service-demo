@@ -7,7 +7,6 @@ import React from "react";
 
 const HotelDescription: React.FC = () => {
   const deviceType = useAppStore((state) => state.deviceType);
-  const { changeModalStatus } = useAppStore();
   const { createBooking } = useBookingStore();
   const handleBooking = async () => {
     await createBooking({
@@ -18,8 +17,6 @@ const HotelDescription: React.FC = () => {
       checkIn: "2024-08-26T14:30:00.123Z",
       checkOut: "2024-08-27T14:30:00.123Z",
     });
-
-    changeModalStatus();
   };
   return (
     <section className="flex flex-col ml-5 w-[49%] max-md:ml-0 max-md:w-full">

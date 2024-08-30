@@ -3,6 +3,7 @@ import { BookingCreateResponse, IBookingStore } from "@/interfaces";
 import { VerificationResponse } from "@/interfaces/VerificationResponse";
 import { BookingCreateDto } from "@/shared";
 import { create } from "zustand";
+import useAppStore from "./appStore";
 import { handleError, setLoadingAndError } from "./utils";
 
 export const useBookingStore = create<IBookingStore>()((set, get) => ({
@@ -26,6 +27,7 @@ export const useBookingStore = create<IBookingStore>()((set, get) => ({
         verUrl: res.url,
         ...(res.bookingId && { bookingId: res.bookingId }),
       });
+      useAppStore.getState().changeModalStatus();
       setLoadingAndError(set, false);
     } catch (err) {
       handleError(set, err);
