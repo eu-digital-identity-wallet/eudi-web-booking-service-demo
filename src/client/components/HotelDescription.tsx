@@ -50,7 +50,7 @@ const HotelDescription: React.FC = () => {
               <div>Book using EUDI Wallet</div>
               <img
                 loading="lazy"
-                src="images/eudiwallet.svg"
+                src="/images/eudiwallet.svg"
                 className="self-center mt-2 w-12 aspect-[1.41]"
                 alt="EUDI Wallet"
               />
@@ -87,7 +87,7 @@ const HotelDescription: React.FC = () => {
               </div>
               <img
                 loading="lazy"
-                src="images/qrcode.svg"
+                src="/images/qrcode.svg"
                 className="self-center mt-2 aspect-square w-[41px]"
                 alt="QR Code"
               />

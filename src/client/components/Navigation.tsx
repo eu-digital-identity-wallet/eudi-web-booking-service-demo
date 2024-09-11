@@ -11,23 +11,23 @@ interface NavItem {
 const Navigation: React.FC = () => {
   const navItems: NavItem[] = [
     {
-      icon: "images/Accommodation.svg",
+      icon: "/images/Accommodation.svg",
       text: "Accommodation",
     },
     {
-      icon: "images/Flights.svg",
+      icon: "/images/Flights.svg",
       text: "Flights",
     },
     {
-      icon: "images/car-rentals.svg",
+      icon: "/images/car-rentals.svg",
       text: "Car Rentals",
     },
     {
-      icon: "images/Sightseeing.svg",
+      icon: "/images/Sightseeing.svg",
       text: "Sightseeing",
     },
     {
-      icon: "images/Transportation.svg",
+      icon: "/images/Transportation.svg",
       text: "Transportation",
     },
   ];
@@ -37,32 +37,32 @@ const Navigation: React.FC = () => {
       <div className="flex gap-5 justify-between self-end font-semibold">
         <img
           loading="lazy"
-          src="images/search-white.svg"
+          src="/images/search-white.svg"
           className="shrink-0 w-6 aspect-square"
           alt=""
         />
         <img
           loading="lazy"
-          src="images/globe.svg"
+          src="/images/globe.svg"
           className="shrink-0 w-6 aspect-square"
           alt=""
         />
         <img
           loading="lazy"
-          src="images/questions.svg"
+          src="/images/questions.svg"
           className="shrink-0 w-6 aspect-square"
           alt=""
         />
         <img
           loading="lazy"
-          src="images/bell.svg"
+          src="/images/bell.svg"
           className="shrink-0 w-6 aspect-square"
           alt=""
         />
         <div className="flex gap-1">
           <img
             loading="lazy"
-            src="images/user.svg"
+            src="/images/user.svg"
             className="shrink-0 w-6 aspect-square"
             alt=""
           />

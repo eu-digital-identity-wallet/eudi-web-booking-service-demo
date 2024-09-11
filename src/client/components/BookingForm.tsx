@@ -65,7 +65,7 @@ const BookingForm: React.FC = () => {
       <div className="flex flex-col text-base text-red-600 text-opacity-70 max-md:mt-10">
         <FormField
           label="Number of guests"
-          icon="images/arrow-down.svg"
+          icon="/images/arrow-down.svg"
           name="guests"
           register={register}
           required
@@ -76,7 +76,7 @@ const BookingForm: React.FC = () => {
 
         <FormField
           label="Number of rooms"
-          icon="images/arrow-down.svg"
+          icon="/images/arrow-down.svg"
           name="rooms"
           register={register}
           required
@@ -93,7 +93,7 @@ const BookingForm: React.FC = () => {
               </label>
               <img
                 loading="lazy"
-                src="images/datepicker.svg"
+                src="/images/datepicker.svg"
                 className="shrink-0 w-6 aspect-square"
                 alt=""
               />
@@ -106,7 +106,7 @@ const BookingForm: React.FC = () => {
               </label>
               <img
                 loading="lazy"
-                src="images/datepicker.svg"
+                src="/images/datepicker.svg"
                 className="shrink-0 w-6 aspect-square"
                 alt=""
               />

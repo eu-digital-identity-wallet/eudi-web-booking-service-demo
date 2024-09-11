@@ -13,11 +13,11 @@ const Header: React.FC = () => {
         <Navigation />
       </header>
       <img
-          loading="lazy"
-          src="images/design.png"
-          className="w-full aspect-[12.5] max-md:max-w-full"
-          alt="Travel destination"
-        />
+        loading="lazy"
+        src="/images/design.png"
+        className="w-full aspect-[12.5] max-md:max-w-full"
+        alt="Travel destination"
+      />
     </div>
   );
 };

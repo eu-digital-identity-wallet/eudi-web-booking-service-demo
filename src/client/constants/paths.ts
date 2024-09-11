@@ -1,3 +1,3 @@
 export const PATHS = {
-  confirmation: "/confirmation",
+  confirmation: (id: string) => `/confirmation/${id}`,
 };

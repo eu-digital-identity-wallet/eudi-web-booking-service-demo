@@ -11,22 +11,24 @@ export interface VerificationResponse {
   status: boolean;
 }
 
-const fetcher = (token: string) =>
-  bookingService.verifyBooking<VerificationResponse>(token);
+const fetcher = (bookingId: string) =>
+  bookingService.verifyBooking<VerificationResponse>(bookingId);
 
 export const useBookingVerify = () => {
   const [status, setStatus] = useState(false);
   const { changeModalStatus } = useAppStore();
   const { resetBooking } = useBookingStore();
 
-  const token = useBookingStore((state) => state.bookingCreateRes?.bookingId);
+  const bookingId = useBookingStore(
+    (state) => state.bookingCreateRes?.bookingId
+  );
   const [polling, setPolling] = useState(true);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const router = useRouter();
 
   // Use SWR for fetching the status
   const { data, error } = useSWR(
-    token,
+    bookingId,
     fetcher,
     { refreshInterval: polling ? 5000 : 0 } // Poll every 5 seconds if polling is true
   );
@@ -44,10 +46,10 @@ export const useBookingVerify = () => {
       stopPolling(); // Stop polling if an error occurs
     }
 
-    if (data?.status) {
+    if (data?.status && bookingId) {
       setStatus(true);
       stopPolling(); // Stop polling if the status is true
-      router.push(PATHS.confirmation); // Navigate to the new post page
+      router.push(PATHS.confirmation(bookingId)); // Navigate to the new post page
     }
 
     // Handle timeout logic
@@ -62,7 +64,7 @@ export const useBookingVerify = () => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [data, timeElapsed, stopPolling, router, error]);
+  }, [data, bookingId, timeElapsed, stopPolling, router, error]);
 
   return { status, error, stopPolling };
 };
