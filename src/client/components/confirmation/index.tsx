@@ -7,11 +7,14 @@ import React from "react";
 type BookingConfirmationProps = {
   details: BookingDto;
   id: string;
+  deviceType: string;
 };
 const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   details,
   id,
+  deviceType,
 }) => {
+  console.log(deviceType);
   return (
     <main className='max-w-[1240px] max-md:max-w-full mx-auto'>
       <div className='flex items-center justify-between p-4 border-b border-gray-200'>
@@ -141,10 +144,59 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
             </div>
 
             {/* EUDI Wallet Button */}
-            <div className='bg-sky-600 text-white p-4 text-center mt-4'>
-              <button className='w-full p-2 font-bold'>
-                Issue your reservation confirmation to EUDI Wallet
-              </button>
+
+            <div className='flex gap-2 justify-center py-2 pr-20 mt-3 text-sm text-center text-white bg-white max-md:flex-wrap max-md:pr-5'>
+              {deviceType === "mobile" ? (
+                <button className='flex justify-betweem px-2 py-4 bg-sky-600 rounded-sm'>
+                  <img
+                    loading='lazy'
+                    src='/images/eudiwallet.svg'
+                    className='mt-2 w-12 aspect-[1.41] ml-4'
+                    alt='EUDI Wallet'
+                  />
+                  <div>Issue your reservation confirmation to EUDI Wallet</div>
+                </button>
+              ) : (
+                <button
+                  onClick={() => console.log("acan qr code")}
+                  className='flex flex-col justify-center px-2 py-4 bg-sky-600 rounded-sm max-md:px-5'
+                >
+                  <div className='flex items-center'>
+                    {/* //TODO change hardcoded value */}
+                    {false && (
+                      <svg
+                        className='animate-spin h-5 w-5 text-white mr-2'
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                      >
+                        <circle
+                          className='opacity-25'
+                          cx='12'
+                          cy='12'
+                          r='10'
+                          stroke='currentColor'
+                          strokeWidth='4'
+                        ></circle>
+                        <path
+                          className='opacity-75'
+                          fill='currentColor'
+                          d='M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8v-8H4z'
+                        ></path>
+                      </svg>
+                    )}
+                    <div>
+                      Issue your reservation confirmation to EUDI Wallet
+                    </div>
+                  </div>
+                  <img
+                    loading='lazy'
+                    src='/images/qrcode.svg'
+                    className='self-center mt-2 aspect-square w-[41px]'
+                    alt='QR Code'
+                  />
+                </button>
+              )}
             </div>
           </div>
         </div>
