@@ -107,7 +107,15 @@ export class VerifierService {
               fields: [
                 {
                   path: ["$['eu.europa.ec.eudi.pid.1']['family_name']"],
-                  intent_to_retain: false,
+                  intent_to_retain: true,
+                },
+                {
+                  path: ["$['eu.europa.ec.eudi.pid.1']['given_name']"],
+                  intent_to_retain: true,
+                },
+                {
+                  path: ["$['eu.europa.ec.eudi.pid.1']['birth_date']"],
+                  intent_to_retain: true,
                 },
               ],
             },
