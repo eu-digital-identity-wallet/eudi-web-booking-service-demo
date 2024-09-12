@@ -22,6 +22,10 @@ model Booking {
   sameDeviceTransactionId String?
   numberOfGuests Int
   numberOfRooms Int
+  reservationDate DateTime
   checkIn    DateTime
   checkOut   DateTime
+  guestFamilyName String
+  guestGivenName String
+  guestDateOfBirth DateTime
 }
