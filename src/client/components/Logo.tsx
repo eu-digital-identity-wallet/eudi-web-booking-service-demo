@@ -6,7 +6,7 @@ import React from "react";
 
 const Logo: React.FC = () => {
   return (
-    <div className="flex gap-2 justify-center p-2 my-auto text-2xl font-bold bg-yellow-500 rounded-lg text-black text-opacity-90">
+    <div className="flex gap-2 justify-center p-2 my-auto text-2xl font-bold bg-secondary rounded-lg text-foreground text-opacity-90">
       <Image
         loading="lazy"
         width={12}
@@ -16,8 +16,8 @@ const Logo: React.FC = () => {
         alt=""
       />
       <div className="my-auto">
-        <span className="text-black">Travel</span>
-        <span className="font-light text-black">Book</span>
+        <span className="text-foreground">Travel</span>
+        <span className="font-light text-foreground">Book</span>
       </div>
     </div>
   );

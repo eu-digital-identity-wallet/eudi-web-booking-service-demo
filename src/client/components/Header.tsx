@@ -12,6 +12,7 @@ const Header: React.FC = () => {
         <Logo />
         <Navigation />
       </header>
+
       <img
         loading="lazy"
         src="/images/design.png"
