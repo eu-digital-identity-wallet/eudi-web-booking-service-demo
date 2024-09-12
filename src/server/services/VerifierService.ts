@@ -128,7 +128,7 @@ export class VerifierService {
     };
 
     if (isMobile) {
-      payload.wallet_response_redirect_uri_template = `https://localhost:3000/booking/verification/${bookingId}?response_code={RESPONSE_CODE}`;
+      payload.wallet_response_redirect_uri_template = `https://localhost:3000/booking/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
     }
 
     const response = await axios.post(
