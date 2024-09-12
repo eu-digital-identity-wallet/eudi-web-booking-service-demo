@@ -21,9 +21,11 @@ export default function MainLayout(props: MainLayoutProps) {
       <div className={classNames("min-h-screen", montserrat.className)}>
         <ToastContainer />
         <Header />
-        <main>{props.children}</main>
+        <main className='min-h-[calc(100vh-250px-365px)]'>
+          {props.children}
+        </main>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }

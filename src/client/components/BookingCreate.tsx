@@ -13,17 +13,17 @@ const BookingCreate: React.FC = () => {
   const { modal } = useAppStore();
 
   return (
-    <main className="max-w-[1240px] max-md:max-w-full mx-auto">
+    <div className='max-w-[1240px] max-md:max-w-full mx-auto'>
       {modal === ModalStatus.OPEN && <Modal />}
       <HotelLocation />
-      <div className="self-center px-5 mt-8 w-full max-w-[1239px] max-md:max-w-full">
-        <div className="flex gap-5 max-md:flex-col max-md:gap-0">
+      <div className='self-center px-5 mt-8 w-full max-w-[1239px] max-md:max-w-full'>
+        <div className='flex gap-5 max-md:flex-col max-md:gap-0'>
           <BookingForm />
           <HotelDescription />
           <Sidebar />
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
