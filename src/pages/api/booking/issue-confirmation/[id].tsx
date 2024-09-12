@@ -17,8 +17,7 @@ export default async function handler(
         return res.status(400).json({ error: "ID is required" });
       }
 
-      const bookingIssueConfirmation =
-        await bookingService.bookingIssueConfirmation(id);
+      const bookingIssueConfirmation = await bookingService.bookingIssueConfirmation(id);
 
       return res.status(200).json(bookingIssueConfirmation);
     } catch (error) {

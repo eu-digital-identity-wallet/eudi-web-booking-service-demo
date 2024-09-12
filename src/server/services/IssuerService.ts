@@ -1,5 +1,4 @@
 import { IssueConfirmationRespone } from "@/shared/interfaces";
-import axios from "axios";
 import { createPrivateKey, createPublicKey } from "crypto";
 import { Service } from "typedi";
 import fs from 'fs';
@@ -94,16 +93,6 @@ export class IssuerService {
 
     const requestBody = new URLSearchParams();
     requestBody.append('request', jwt);
- 
-
-    // const response = await axios.post(
-    //   "https://dev.issuer.eudiw.dev/credentialOfferReq",
-    //   requestData,
-    //   { 
-    //     headers: {     'Content-Type': 'application/x-www-form-urlencoded'      },
-    //     maxRedirects: 5, 
-    //   }
-    // );
 
     try {
       const response = await fetch('https://dev.issuer.eudiw.dev/credentialOfferReq', {

@@ -1,5 +1,4 @@
 import { VerificationResponse } from "@/shared/interfaces";
-import axios from "axios";
 import { decode } from "cbor-x";
 import { Service } from "typedi";
 
@@ -138,14 +137,22 @@ export class VerifierService {
       payload.wallet_response_redirect_uri_template = `https://localhost:3000/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
     }
 
-    const response = await axios.post(
-      "https://dev.verifier-backend.eudiw.dev/ui/presentations",
-      payload,
-      { headers: { "Content-Type": "application/json" } }
-    );
-    const clientId = encodeURIComponent(response.data.client_id);
-    const requestURI = encodeURIComponent(response.data.request_uri);
-    const TransactionId = encodeURIComponent(response.data.presentation_id);
+    const response = await fetch("https://dev.verifier-backend.eudiw.dev/ui/presentations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),  // Convert payload to JSON
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const clientId = encodeURIComponent(data.client_id);
+    const requestURI = encodeURIComponent(data.request_uri);
+    const TransactionId = encodeURIComponent(data.presentation_id);
     const requestUri = `eudi-openid4vp://?client_id=${clientId}&request_uri=${requestURI}`;
 
     return { requestUri, TransactionId };
@@ -157,44 +164,52 @@ export class VerifierService {
     if (!crossDeviceTransactionId) {
       throw new Error("Undefined Transaction.");
     }
-
+  
     try {
       const url = `https://dev.verifier-backend.eudiw.dev/ui/presentations/${crossDeviceTransactionId}`;
-
-      const response = await axios.get(url, {
+  
+      const response = await fetch(url, {
+        method: "GET",
         headers: {
-          accept: "application/json",
+          "Accept": "application/json",
         },
       });
-      if(response.status === 200){
+  
+      // Check if the response status is 200 (OK)
+      if (response.status === 200) {
+        const responseData = await response.json();
+  
         // Decode the received token
-        const buffer = decodeBase64OrHex(response.data.vp_token);
+        const buffer = decodeBase64OrHex(responseData.vp_token);
         const decodedData = decodeCborData(buffer);
-
+  
         if (decodedData) {
-          // Extract the family name from issuerSigned
+          // Extract personal info
           const personalInfo = extractPersonalInfo(decodedData);
+  
+          // Ensure all personal info fields are available
           if (personalInfo.date_of_birth && personalInfo.family_name && personalInfo.given_name) {
-            console.log("Pesonal Info:", personalInfo);
+            console.log("Personal Info:", personalInfo);
             return {
-              status: response.status === 200,
-              personalInfo
-            }
-          } 
+              status: true, // response.status === 200
+              personalInfo,
+            };
+          }
         }
       }
-      return { status : false } ;
+  
+      // Return a failed verification status if the checks don't pass
+      return { status: false };
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 400) {
-          return  { status : false } ;
-        } else {
-          console.error("An error occurred:", error.message);
-        }
-      } else {
-        console.error("Unexpected error:", error);
+      console.error("Unexpected error:", error);
+  
+      // Handle HTTP errors and rethrow for higher-level error handling
+      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+        // This block handles network issues, or invalid URLs
+        return { status: false };
       }
-      throw error;
+  
+      throw error; // Re-throw unexpected errors
     }
   }
 }
