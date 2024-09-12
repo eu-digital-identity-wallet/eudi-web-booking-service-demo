@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 check_out_date : '31/11/204', // TODO
                 num_of_rooms:2, // TODO
                 guests: 4,  // TODO 
-                car_plate:'NBP3012', // TODO
+                car_rental: false, //true false TODO
                 family_name:'Nikolopoulos', // TODO 
                 given_name:'Ioannis', // TODO 
                 birth_date:'12/12/1952' // TODO
