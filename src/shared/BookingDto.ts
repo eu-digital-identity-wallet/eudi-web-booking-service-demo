@@ -5,8 +5,8 @@ import { z } from "zod";
 export type BookingDto = z.infer<typeof bookingDtoSchema>;
 
 export type BookingDetailsDto = BookingDto & {
-    guestFamilyName: string | null;
-    guestGivenName: string | null;
-    guestDateOfBirth: string | null; // Can be Date or ISO string based on your usage
-    reservationDate: string;  
+  guestFamilyName: string | null;
+  guestGivenName: string | null;
+  guestDateOfBirth: string | null; // Can be Date or ISO string based on your usage
+  reservationDate: string;
 };

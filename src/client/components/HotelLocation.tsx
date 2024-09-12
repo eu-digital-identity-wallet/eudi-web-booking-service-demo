@@ -1,3 +1,4 @@
+import { Hotel } from "@/shared";
 import HeartIcon from "./icons/HeartIcon";
 import PinIcon from "./icons/PinIcon";
 import PlusIcon from "./icons/PlusIcon";
@@ -13,7 +14,7 @@ export default function HotelLocation() {
         <div className="flex items-center space-x-2">
           <div className="flex items-center">
             {[...Array(5)].map((_, index) => (
-              <StarIcon key={_} className="size-4 text-secondary" />
+              <StarIcon key={index} className="size-4 text-secondary" />
             ))}
           </div>
           <div className="bg-secondary text-background text-sm font-bold px-1.5 py-0.5 rounded-md flex items-center">
@@ -32,14 +33,11 @@ export default function HotelLocation() {
       </div>
 
       <h1 className="text-2xl font-bold mt-2 text-accent-foreground">
-        Utopia Hotel
+        {Hotel.name}
       </h1>
       <div className="flex items-center mt-2">
         <PinIcon className="w-8 h-8 text-primary" />
-        <span className="text-foreground font-semibold">
-          25 Boulevard du Souverain, Watermaal-Bosvoorde / Watermael-Boitsfort,
-          1170 Brussels, Belgium
-        </span>
+        <span className="text-foreground font-semibold">{Hotel.location}</span>
       </div>
       <span className="text-primary cursor-pointer  font-bold underline mt-1 block">
         Great location - show map
