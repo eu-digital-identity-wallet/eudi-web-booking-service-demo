@@ -22,8 +22,8 @@ export default function MainLayout(props: MainLayoutProps) {
         <ToastContainer />
         <Header />
         <main>{props.children}</main>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }
