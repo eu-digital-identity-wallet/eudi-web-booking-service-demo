@@ -4,6 +4,7 @@
 import { BookingDto } from "@/shared";
 import React from "react";
 import HotelLocation from "../HotelLocation";
+import HotelImage from "../Sidebar";
 
 type BookingConfirmationProps = {
   details: BookingDto;
@@ -20,7 +21,7 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
     <main className='max-w-[1240px] max-md:max-w-full mx-auto'>
       <HotelLocation />
       {/* ----------------------- */}
-      <div className='flex mx-auto bg-white rounded-xl overflow-hidden'>
+      <div className='flex mx-auto bg-white w-full rounded-xl'>
         {/* Left Section: Reservation & Car Rental */}
         <div className='w-2/4 p-2'>
           {/* header */}
@@ -152,46 +153,8 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           </div>
         </div>
         {/* Right Section: Reviews & Map */}
-        <div className='w-1/4 p-4'>
-          {/* Review Box */}
-          <div className='bg-white shadow p-4 rounded-md'>
-            <div className='flex items-center'>
-              <div className='text-sky-600 text-3xl font-bold'>8.5</div>
-              <div className='ml-2'>
-                <p className='font-bold'>Very good</p>
-                <p className='text-gray-500 text-sm'>2,477 reviews</p>
-              </div>
-            </div>
-            <p className='text-sm mt-4 text-black'>
-              Great that there is an option for early and late checkout as it
-              allowed us to make the most of the weekend we were there for.
-              Great hotel room...
-            </p>
-            <div className='mt-2 flex items-center'>
-              <p className='text-sm text-gray-500'>Tazmein</p>
-              <img
-                src='https://via.placeholder.com/16'
-                alt='Country Flag'
-                className='ml-2 rounded-full'
-              />
-              <p className='text-sm text-gray-500 ml-1'>United Kingdom</p>
-            </div>
-            <p className='mt-4 text-gray-500 text-sm'>
-              Free WiFi <span className='text-sky-600 font-bold ml-2'>8.6</span>
-            </p>
-          </div>
-
-          {/* Map Button */}
-          <div className='mt-4 bg-white p-4 shadow rounded-md text-center'>
-            <button className='bg-sky-600 text-white p-2 w-full font-bold'>
-              Show on map
-            </button>
-            <img
-              src='https://via.placeholder.com/200'
-              alt='Map Preview'
-              className='w-full mt-4 rounded-md'
-            />
-          </div>
+        <div className='w-1/4 p-2'>
+          <HotelImage />
         </div>
       </div>
       {/* ----------------------- */}
