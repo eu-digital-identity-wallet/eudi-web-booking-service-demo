@@ -1,3 +1,4 @@
+import { Hotel } from "@/shared";
 import HeartIcon from "./icons/HeartIcon";
 import PinIcon from "./icons/PinIcon";
 import PlusIcon from "./icons/PlusIcon";
@@ -32,14 +33,11 @@ export default function HotelLocation() {
       </div>
 
       <h1 className='text-2xl font-bold mt-2 text-accent-foreground'>
-        Utopia Hotel
+        {Hotel.name}
       </h1>
       <div className='flex items-center mt-2'>
         <PinIcon className='w-8 h-8 text-primary' />
-        <span className='text-foreground font-semibold'>
-          25 Boulevard du Souverain, Watermaal-Bosvoorde / Watermael-Boitsfort,
-          1170 Brussels, Belgium
-        </span>
+        <span className='text-foreground font-semibold'>{Hotel.location}</span>
       </div>
       <span className='text-primary cursor-pointer  font-bold underline mt-1 block'>
         Great location - show map
