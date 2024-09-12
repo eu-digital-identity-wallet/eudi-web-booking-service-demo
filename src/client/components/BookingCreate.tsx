@@ -30,11 +30,13 @@ const BookingCreate: React.FC = () => {
                 </svg>
               ))}
             </div>
-            <div className="bg-yellow-400 text-white text-sm font-bold px-1.5 py-0.5 rounded-full flex items-center">
-              <span>👍</span>
+            <div className="bg-yellow-400 text-white text-sm font-bold px-1.5 py-0.5 rounded-md flex items-center">
+              <span>👍🏻 +</span>
             </div>
           </div>
-          <h1 className="text-2xl font-bold mt-2 text-black">Utopia Hotel</h1>
+          <h1 className="text-2xl font-bold mt-2 text-accent-foreground">
+            Utopia Hotel
+          </h1>
           <div className="flex items-center text-blue-600 mt-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"

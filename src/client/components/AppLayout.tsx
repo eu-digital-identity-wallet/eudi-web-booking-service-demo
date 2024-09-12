@@ -11,7 +11,7 @@ const AppLayout = ({ children }: AppLayoutProps) => (
   <Fragment>
     <ToastContainer />
     <Header />
-    <div className="flex flex-col pb-10 bg-white">{children}</div>
+    <div className="flex flex-col pb-10">{children}</div>
     <Footer />
   </Fragment>
 );

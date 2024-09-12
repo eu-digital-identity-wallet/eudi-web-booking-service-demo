@@ -1,9 +1,9 @@
 import { apiFetch } from "@/helpers/apiFetch";
-import { BookingCreateDto } from "@/shared";
+import { BookingDto } from "@/shared";
 import { URLS } from "../constants";
 
-const createBooking = <T>(newBooking: BookingCreateDto) => {
-  return apiFetch.post<BookingCreateDto, T>(URLS.create, newBooking, {
+const createBooking = <T>(newBooking: BookingDto) => {
+  return apiFetch.post<BookingDto, T>(URLS.create, newBooking, {
     headers: {
       "Content-Type": "application/json",
     },

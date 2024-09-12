@@ -8,7 +8,7 @@ import Navigation from "./Navigation";
 const Header: React.FC = () => {
   return (
     <div>
-      <header className="flex gap-5 justify-between px-12 py-6 w-full bg-sky-900 max-md:flex-wrap max-md:px-5 max-md:max-w-full">
+      <header className="flex gap-5 justify-between px-12 py-6 w-full bg-primary max-md:flex-wrap max-md:px-5 max-md:max-w-full">
         <Logo />
         <Navigation />
       </header>
