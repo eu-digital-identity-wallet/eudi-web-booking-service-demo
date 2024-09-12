@@ -22,10 +22,11 @@ model Booking {
   sameDeviceTransactionId String?
   numberOfGuests Int
   numberOfRooms Int
-  reservationDate DateTime
+  reservationDate       DateTime  @default(now()) // Automatically set the reservation date
   checkIn    DateTime
   checkOut   DateTime
-  guestFamilyName String
-  guestGivenName String
-  guestDateOfBirth DateTime
+  carRental Boolean
+  guestFamilyName String?
+  guestGivenName  String?
+  guestDateOfBirth  DateTime?
 }

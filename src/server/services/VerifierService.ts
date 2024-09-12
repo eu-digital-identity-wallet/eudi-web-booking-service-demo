@@ -37,9 +37,13 @@ function decodeCborData(data: Uint8Array) {
   }
 }
 
-// Function to extract the family name from issuerSigned data
-function extractFamilyName(decodedData: any): string | null {
+// Function to extract family name, given name, and date of birth from issuerSigned data
+function extractPersonalInfo(decodedData: any): { family_name: string | null; given_name: string | null; date_of_birth: string | null } {
   const issuerSigned = decodedData?.documents?.[0]?.issuerSigned;
+
+  let familyName = null;
+  let givenName = null;
+  let dateOfBirth = null;
 
   if (issuerSigned) {
     const namespaces = issuerSigned.nameSpaces;
@@ -51,18 +55,20 @@ function extractFamilyName(decodedData: any): string | null {
         if (element.value) {
           const decodedElement = decode(element.value);
 
-          // Now, check for the family_name in the decoded data
-          if (
-            decodedElement &&
-            decodedElement.elementIdentifier === "family_name"
-          ) {
-            return decodedElement.elementValue;
+          // Check for family_name, given_name, and date_of_birth in the decoded data
+          if (decodedElement && decodedElement.elementIdentifier === "family_name") {
+            familyName = decodedElement.elementValue;
+          } else if (decodedElement && decodedElement.elementIdentifier === "given_name") {
+            givenName = decodedElement.elementValue;
+          } else if (decodedElement && decodedElement.elementIdentifier === "date_of_birth") {
+            dateOfBirth = decodedElement.elementValue;
           }
         }
       }
     }
   }
-  return null;
+
+  return { family_name: familyName, given_name: givenName, date_of_birth: dateOfBirth };
 }
 
 /**
@@ -166,14 +172,14 @@ export class VerifierService {
 
       if (decodedData) {
         // Extract the family name from issuerSigned
-        const familyName = extractFamilyName(decodedData);
-        if (familyName) {
-          console.log("Family Name:", familyName);
+        const personalInfo = extractPersonalInfo(decodedData);
+        if (personalInfo) {
+          console.log("Pesonal Info:", personalInfo);
         } else {
-          console.log("Family Name: Family name not found");
+          console.log("Pesonal info not found");
         }
       } else {
-        console.log("Family Name: Family name not found");
+        console.log("Pesonal info not found");
       }
 
       return response.status === 200;

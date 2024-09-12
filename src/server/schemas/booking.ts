@@ -22,5 +22,6 @@ export const bookingDtoSchema = z
     checkOut: z.string().refine(isISODate, {
       message: "Invalid date format. Must be ISO 8601 date string.",
     }),
+    carRental: z.boolean(), 
   })
   .strict(); // strict mode to disallow extra fields

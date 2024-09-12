@@ -1,5 +1,5 @@
 import { bookingDtoSchema, bookingIdSchema } from "@/server/schemas";
-import type { BookingDto } from "@/shared";
+import type { BookingDto, BookingDetailsDto } from "@/shared";
 import { BookingCreateResponse } from "@/shared/interfaces";
 import { Booking } from "@prisma/client";
 import { Inject, Service } from "typedi";
@@ -67,13 +67,13 @@ export class BookingService {
   }
 
   @ValidateInput(bookingIdSchema)
-  public async bookingDetails(bookingID: string): Promise<BookingDto | null> {
+  public async bookingDetails(bookingID: string): Promise<BookingDetailsDto | null> {
     const record = await this.bookingRepository.findById(bookingID);
     if (record) {
-      const bookingPublicDto = this.mapper.map<Booking, BookingDto>(
+      const bookingPublicDto = this.mapper.map<Booking, BookingDetailsDto>(
         record,
         "Booking",
-        "BookingDto"
+        "BookingDetailsDto"
       );
       return bookingPublicDto;
     }

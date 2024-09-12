@@ -1,6 +1,6 @@
 import { Mapper, createMap, forMember, mapFrom } from "@automapper/core";
 
-import { BookingDto } from "@/shared";
+import { BookingDto, BookingDetailsDto } from "@/shared";
 import { Booking } from "@prisma/client";
 
 export const bookingMap = (mapper: Mapper) => {
@@ -31,13 +31,17 @@ export const bookingMap = (mapper: Mapper) => {
     forMember(
       (destination) => destination.checkOut,
       mapFrom((source) => new Date(source.checkOut))
+    ),
+    forMember(
+      (destination) => destination.carRental,
+      mapFrom((source) => source.carRental)
     )
   );
 
-  createMap<Booking, BookingDto>(
+  createMap<Booking, BookingDetailsDto>(
     mapper,
     "Booking",
-    "BookingDto",
+    "BookingDetailsDto",
     forMember(
       (destination) => destination.hotel,
       mapFrom((source) => source.hotel)
@@ -61,6 +65,26 @@ export const bookingMap = (mapper: Mapper) => {
     forMember(
       (destination) => destination.checkOut,
       mapFrom((source) => source.checkOut.toDateString())
+    ),
+    forMember(
+      (destination) => destination.carRental,
+      mapFrom((source) => source.carRental)
+    ),
+    forMember(
+      (destination) => destination.guestFamilyName,
+      mapFrom((source) => source.guestFamilyName ?? null) // Handle null case
+    ),
+    forMember(
+      (destination) => destination.guestGivenName,
+      mapFrom((source) => source.guestGivenName ?? null) // Handle null case
+    ),
+    forMember(
+      (destination) => destination.guestDateOfBirth,
+      mapFrom((source) => source.guestDateOfBirth ? source.guestDateOfBirth.toDateString() : null) // Handle null case
+    ),
+    forMember(
+      (destination) => destination.reservationDate,
+      mapFrom((source) => source.reservationDate.toDateString())  
     )
   );
 };
