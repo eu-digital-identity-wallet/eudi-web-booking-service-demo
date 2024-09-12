@@ -1,3 +1,4 @@
+import { VerificationResponse } from "@/shared/interfaces";
 import axios from "axios";
 import { decode } from "cbor-x";
 import { Service } from "typedi";
@@ -60,8 +61,8 @@ function extractPersonalInfo(decodedData: any): { family_name: string | null; gi
             familyName = decodedElement.elementValue;
           } else if (decodedElement && decodedElement.elementIdentifier === "given_name") {
             givenName = decodedElement.elementValue;
-          } else if (decodedElement && decodedElement.elementIdentifier === "date_of_birth") {
-            dateOfBirth = decodedElement.elementValue;
+          } else if (decodedElement && decodedElement.elementIdentifier === "birth_date") {
+            dateOfBirth = decodedElement.elementValue.value;
           }
         }
       }
@@ -134,7 +135,7 @@ export class VerifierService {
     };
 
     if (isMobile) {
-      payload.wallet_response_redirect_uri_template = `https://localhost:3000/booking/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
+      payload.wallet_response_redirect_uri_template = `https://localhost:3000/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
     }
 
     const response = await axios.post(
@@ -152,7 +153,7 @@ export class VerifierService {
 
   public async checkVerification(
     crossDeviceTransactionId: string
-  ): Promise<boolean> {
+  ): Promise<VerificationResponse> {
     if (!crossDeviceTransactionId) {
       throw new Error("Undefined Transaction.");
     }
@@ -165,28 +166,28 @@ export class VerifierService {
           accept: "application/json",
         },
       });
+      if(response.status === 200){
+        // Decode the received token
+        const buffer = decodeBase64OrHex(response.data.vp_token);
+        const decodedData = decodeCborData(buffer);
 
-      // Decode the received token
-      const buffer = decodeBase64OrHex(response.data.vp_token);
-      const decodedData = decodeCborData(buffer);
-
-      if (decodedData) {
-        // Extract the family name from issuerSigned
-        const personalInfo = extractPersonalInfo(decodedData);
-        if (personalInfo) {
-          console.log("Pesonal Info:", personalInfo);
-        } else {
-          console.log("Pesonal info not found");
+        if (decodedData) {
+          // Extract the family name from issuerSigned
+          const personalInfo = extractPersonalInfo(decodedData);
+          if (personalInfo.date_of_birth && personalInfo.family_name && personalInfo.given_name) {
+            console.log("Pesonal Info:", personalInfo);
+            return {
+              status: response.status === 200,
+              personalInfo
+            }
+          } 
         }
-      } else {
-        console.log("Pesonal info not found");
       }
-
-      return response.status === 200;
+      return { status : false } ;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.status === 400) {
-          return false;
+          return  { status : false } ;
         } else {
           console.error("An error occurred:", error.message);
         }
