@@ -4,6 +4,7 @@ import { Service } from "typedi";
 import fs from 'fs';
 import { Booking } from "@prisma/client";
 import { SignJWT } from "jose";
+import jks from 'jks-js';
  
 type JWTPayload = {
   iss: string;  // Issuer URL
@@ -39,13 +40,24 @@ export class IssuerService {
     if( !booking.guestFamilyName || !booking.guestGivenName  || ! booking.guestDateOfBirth  ){
       throw new Error('Personal info missing');
     }
+
+    const keystore = jks.toPem(
+      fs.readFileSync('./tmp/keystore.jks'),
+      '123456'
+    );
+ 
+    
+    const jksStore = keystore['eudiwbooking']
+    // console.error(jksStore);
+    if(!jksStore.key || !jksStore.cert){
+      throw new Error('Keystore {key,cert} values are missing');
+    }
     // Load private and public keys
-    const privateKey = createPrivateKey(fs.readFileSync('./tmp/private.key', 'utf8'));
-    const publicKey = createPublicKey( fs.readFileSync('./tmp/public_cert.pem', 'utf8'));
+    const privateKey = createPrivateKey(jksStore.key);  
+    const publicKey = createPublicKey(jksStore.cert);  
     
     // Load the certificate and encode it for the x5c header
-    const cert = fs.readFileSync('./tmp/public_cert.pem', 'utf8')
-    .toString()
+    const jwtHeaderCert = jksStore.cert
     .replace(/-----BEGIN CERTIFICATE-----/g, '')
     .replace(/-----END CERTIFICATE-----/g, '')
     .replace(/\n/g, ''); // Remove newlines and headers
@@ -83,19 +95,19 @@ export class IssuerService {
     const jwt = await new SignJWT(jwtPayload)
       .setProtectedHeader({
           alg: 'ES256',
-          x5c: [cert]  // Add x5c with the base64 encoded certificate
+          x5c: [jwtHeaderCert]  // Add x5c with the base64 encoded certificate
       })
       .setIssuedAt()
       .setExpirationTime('5m')
       .sign(privateKey);
 
-    console.log('JWT:', jwt);
+    // console.log('JWT:', jwt);
 
     const requestBody = new URLSearchParams();
     requestBody.append('request', jwt);
 
     try {
-      const response = await fetch('https://dev.issuer.eudiw.dev/credentialOfferReq', {
+      const response = await fetch('https://dev.issuer.eudiw.dev/credentialOfferReq2', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -103,16 +115,29 @@ export class IssuerService {
         body: requestBody.toString(), 
       });
           
-      console.log(response);
+      const responseData = await response.json(); 
+      const otp = responseData.grants['urn:ietf:params:oauth:grant-type:pre-authorized_code'].tx_code.value;
+
+      // Remove the tx_code object from the original response data
+      const responseCopy = { ...responseData };
+      delete responseCopy.grants['urn:ietf:params:oauth:grant-type:pre-authorized_code'].tx_code;
+
+      // URL encode the response data without the tx_code
+      const urlEncodedResponse = encodeURIComponent(JSON.stringify(responseCopy));
+
+      // Create the final object with URL and OTP
+      const result = {
+        requestUri: `eudi-openid4vp://?credential_offer=${urlEncodedResponse}`,
+        otp
+      };
+
+      return result;
 
     } catch (error) {
       console.error(error)
     }
 
-
-    const requestUri = `eudi-openid4vp://?`;
-
-    return { requestUri };
+    throw new Error('Failed to issue confirmation');
   }
  
 }
