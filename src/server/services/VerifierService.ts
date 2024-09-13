@@ -189,7 +189,7 @@ export class VerifierService {
   
           // Ensure all personal info fields are available
           if (personalInfo.date_of_birth && personalInfo.family_name && personalInfo.given_name) {
-            console.log("Personal Info:", personalInfo);
+            //console.log("Personal Info:", personalInfo);
             return {
               status: true, // response.status === 200
               personalInfo,
