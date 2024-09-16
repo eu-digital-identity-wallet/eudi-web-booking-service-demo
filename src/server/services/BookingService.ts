@@ -84,7 +84,6 @@ export class BookingService {
     const record = await this.bookingRepository.findById(bookingID);
     if (record) {
       const issueConfirmationResponse = await this.issuer.issueConfirmation(record); 
-      console.log(issueConfirmationResponse)
       return issueConfirmationResponse;
     }
     return null;

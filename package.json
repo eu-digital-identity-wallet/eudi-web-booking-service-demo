@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:push": "npx prisma db push"
+    "prisma:push": "npx prisma db push",
+    "prisma:deploy": "npx prisma migrate deploy",
+    "prisma:init": "npx prisma generate"
   },
   "dependencies": {
     "@automapper/core": "^8.8.1",

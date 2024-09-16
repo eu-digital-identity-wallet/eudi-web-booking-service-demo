@@ -127,7 +127,7 @@ export class IssuerService {
 
       // Create the final object with URL and OTP
       const result = {
-        requestUri: `eudi-openid4vp://?credential_offer=${urlEncodedResponse}`,
+        requestUri: `openid-credential-offer://?credential_offer=${urlEncodedResponse}`,
         otp
       };
 
