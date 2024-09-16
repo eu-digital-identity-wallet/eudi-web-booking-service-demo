@@ -134,10 +134,10 @@ export class VerifierService {
     };
 
     if (isMobile) {
-      payload.wallet_response_redirect_uri_template = `https://localhost:3000/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
+      payload.wallet_response_redirect_uri_template = `${process.env.NEXT_PUBLIC_APP_URL}/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
     }
 
-    const response = await fetch("https://dev.verifier-backend.eudiw.dev/ui/presentations", {
+    const response = await fetch(`${process.env.VERIFIER_API_URL}/ui/presentations`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -166,7 +166,7 @@ export class VerifierService {
     }
   
     try {
-      const url = `https://dev.verifier-backend.eudiw.dev/ui/presentations/${crossDeviceTransactionId}`;
+      const url = `${process.env.VERIFIER_API_URL}/ui/presentations/${crossDeviceTransactionId}`;
   
       const response = await fetch(url, {
         method: "GET",

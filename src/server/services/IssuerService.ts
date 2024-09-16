@@ -40,14 +40,16 @@ export class IssuerService {
     if( !booking.guestFamilyName || !booking.guestGivenName  || ! booking.guestDateOfBirth  ){
       throw new Error('Personal info missing');
     }
-
+    if(!process.env.KEYSTORE_FILE || !process.env.KEYSTORE_PASS || !process.env.KEYSTORE_ALIAS){
+      throw new Error('Keystore info missing')
+    }
     const keystore = jks.toPem(
-      fs.readFileSync('./tmp/keystore.jks'),
-      '123456'
+      fs.readFileSync(process.env.KEYSTORE_FILE),
+      process.env.KEYSTORE_PASS
     );
  
     
-    const jksStore = keystore['eudiwbooking']
+    const jksStore = keystore[process.env.KEYSTORE_ALIAS]
     // console.error(jksStore);
     if(!jksStore.key || !jksStore.cert){
       throw new Error('Keystore {key,cert} values are missing');
@@ -61,10 +63,12 @@ export class IssuerService {
     .replace(/-----BEGIN CERTIFICATE-----/g, '')
     .replace(/-----END CERTIFICATE-----/g, '')
     .replace(/\n/g, ''); // Remove newlines and headers
-    
+    if(!process.env.NEXT_PUBLIC_APP_URL || !process.env.ISSUER_API_URL ){
+      throw new Error('missing env var');
+    }
     const jwtPayload: JWTPayload = {
-      iss: "http://localhost:3000", // TODO public url tis efarmogis mas 
-      aud : "https://dev.issuer.eudiw.dev", // TODO : env varialble 
+      iss: process.env.NEXT_PUBLIC_APP_URL ,  
+      aud : process.env.ISSUER_API_URL,  
       grants : ["urn:ietf:params:oauth:grant-type:pre-authorized_code"],
       credentials: [
           {
@@ -107,7 +111,7 @@ export class IssuerService {
     requestBody.append('request', jwt);
 
     try {
-      const response = await fetch('https://dev.issuer.eudiw.dev/credentialOfferReq2', {
+      const response = await fetch(`${process.env.ISSUER_API_URL}/credentialOfferReq2`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
