@@ -1,6 +1,5 @@
-import useAppStore, { ModalStatus } from "@/client/store/appStore";
+import { ModalStatus, useAppStore } from "@/client/store";
 import { useBookingStore } from "@/client/store/bookingStore";
-import React from "react";
 import QRCode from "react-qr-code";
 import { useBookingVerify } from "../hooks/useBookingVerify";
 

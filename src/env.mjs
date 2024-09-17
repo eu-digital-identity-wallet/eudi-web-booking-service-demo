@@ -14,6 +14,12 @@ const server = z.object({
  */
 const client = z.object({
   NEXT_PUBLIC_APP_NAME: z.string().optional(),
+  NEXT_PUBLIC_APP_URL: z.string().optional(),
+  VERIFIER_API_URL: z.string().optional(),
+  ISSUER_API_URL: z.string().optional(),
+  KEYSTORE_FILE: z.string().optional(),
+  KEYSTORE_PASS: z.string().optional(),
+  KEYSTORE_ALIAS: z.string().optional(),
 });
 
 /**
@@ -25,6 +31,11 @@ const client = z.object({
 const processEnv = {
   POSTGRES_CONNECTION_STRING: process.env.GRAPHQL_SERVER_URI,
   NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+  VERIFIER_API_URL: process.env.VERIFIER_API_URL,
+  ISSUER_API_URL: process.env.ISSUER_API_URL,
+  KEYSTORE_FILE: process.env.KEYSTORE_FILE,
+  KEYSTORE_PASS: process.env.KEYSTORE_PASS,
+  KEYSTORE_ALIAS: process.env.KEYSTORE_ALIAS,
 };
 
 // Don't touch the part below

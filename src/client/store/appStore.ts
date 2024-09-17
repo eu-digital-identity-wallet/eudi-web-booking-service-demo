@@ -11,12 +11,10 @@ type Store = {
   changeModalStatus: (modal: ModalStatus) => void;
 };
 
-const useAppStore = create<Store>()((set) => ({
+export const useAppStore = create<Store>()((set) => ({
   modal: ModalStatus.CLOSE,
   deviceType: "",
   setDeviceType: (device: string) => set(() => ({ deviceType: device })),
 
   changeModalStatus: (modal) => set({ modal }),
 }));
-
-export default useAppStore;

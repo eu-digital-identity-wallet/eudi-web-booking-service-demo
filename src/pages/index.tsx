@@ -1,5 +1,5 @@
 import BookingCreate from "@/client/components/BookingCreate";
-import useAppStore from "@/client/store/appStore";
+import { useAppStore } from "@/client/store";
 import { deviceDetect } from "@/helpers/deviceDetect";
 import { GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";

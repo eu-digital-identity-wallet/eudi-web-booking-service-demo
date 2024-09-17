@@ -1,4 +1,4 @@
-import { apiFetch } from "@/helpers/apiFetch";
+import { apiFetch } from "@/helpers";
 import { BookingDto } from "@/shared";
 import { URLS } from "../constants";
 
