@@ -29,8 +29,6 @@ COPY --from=builder /app/node_modules ./node_modules
 # Copy Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
 
-RUN export $(grep -v '^#' .env.production.local | xargs)
-
 # Copy the startup script
 COPY start.sh /start.sh
 
