@@ -106,7 +106,7 @@ export class VerifierService {
 
       // Use the DataDecoderService to decode the token
       const buffer = this.dataDecoderService.decodeBase64OrHex(
-        responseData.vp_token
+        responseData.vp_token[0]
       );
       const decodedData = this.dataDecoderService.decodeCborData(buffer);
 
