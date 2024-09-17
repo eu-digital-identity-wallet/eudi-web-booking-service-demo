@@ -1,4 +1,4 @@
-import "@/helpers/prisma-client";
+import "@/helpers/prismaClient";
 import "reflect-metadata";
 
 export * from "./repositories";

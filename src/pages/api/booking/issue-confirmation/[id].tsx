@@ -18,7 +18,7 @@ export default async function handler(
     const id = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
 
     // Check if ID is provided and is a valid PostgreSQL numeric ID
-    if (!id || isNaN(Number(id))) {
+    if (!id) {
       return res.status(400).json({ error: "Valid numeric ID is required" });
     }
 
