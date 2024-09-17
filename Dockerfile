@@ -14,7 +14,7 @@ RUN npm run prisma:init
 RUN npm run build
 
 # Stage 2: Set up the production environment with Nginx
-FROM node:20-alpine
+FROM node:20.15.1-alpine
 WORKDIR /app
 
 # Install Nginx
