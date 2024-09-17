@@ -1,1 +1,2 @@
-export * from "./prisma-client";
+export * from "./apiFetch";
+export * from "./prismaClient";

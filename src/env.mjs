@@ -5,7 +5,7 @@ import { z } from 'zod';
  * built with invalid env vars.
  */
 const server = z.object({
-  POSTGRES_CONNECTION_STRING: z.string().optional(),
+  POSTGRES_CONNECTION_STRING: z.string()
 });
 
 /**
@@ -13,7 +13,13 @@ const server = z.object({
  * built with invalid env vars. To expose them to the client, prefix them with `NEXT_PUBLIC_`.
  */
 const client = z.object({
-  NEXT_PUBLIC_APP_NAME: z.string().optional(),
+  NEXT_PUBLIC_APP_NAME: z.string(),
+  NEXT_PUBLIC_APP_URL: z.string(),
+  VERIFIER_API_URL: z.string(),
+  ISSUER_API_URL: z.string(),
+  KEYSTORE_FILE: z.string(),
+  KEYSTORE_PASS: z.string(),
+  KEYSTORE_ALIAS: z.string(),
 });
 
 /**
@@ -25,6 +31,11 @@ const client = z.object({
 const processEnv = {
   POSTGRES_CONNECTION_STRING: process.env.GRAPHQL_SERVER_URI,
   NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+  VERIFIER_API_URL: process.env.VERIFIER_API_URL,
+  ISSUER_API_URL: process.env.ISSUER_API_URL,
+  KEYSTORE_FILE: process.env.KEYSTORE_FILE,
+  KEYSTORE_PASS: process.env.KEYSTORE_PASS,
+  KEYSTORE_ALIAS: process.env.KEYSTORE_ALIAS,
 };
 
 // Don't touch the part below

@@ -1,6 +1,6 @@
 import { PATHS } from "@/client/constants";
 import { bookingService } from "@/client/services/booking";
-import useAppStore, { ModalStatus } from "@/client/store/appStore";
+import { ModalStatus, useAppStore } from "@/client/store";
 import { useBookingStore } from "@/client/store/bookingStore";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";

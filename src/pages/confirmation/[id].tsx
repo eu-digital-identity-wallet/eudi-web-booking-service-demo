@@ -9,7 +9,7 @@ export default function ConfirmationPage(props: AppProps) {
   const { id, deviceType, hasError, ...bookingDetails } = props.pageProps;
   if (hasError) {
     return (
-      <div className='text-black text-lg font-bold p-4 '>Booking not found</div>
+      <div className="text-black text-lg font-bold p-4 ">Booking not found</div>
     );
   }
   return (

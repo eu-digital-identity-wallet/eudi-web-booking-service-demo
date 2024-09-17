@@ -1,5 +1,4 @@
 import { classNames } from "@/client/utils/classNames";
-import React from "react";
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   className?: string;

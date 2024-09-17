@@ -31,6 +31,7 @@
     "reflect-metadata": "^0.2.2",
     "swr": "^2.2.5",
     "typedi": "^0.10.0",
+    "uuid": "^10.0.0",
     "zod": "^3.23.8",
     "zustand": "^4.5.5"
   },
@@ -38,6 +39,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.5",
     "eslint": "^8",

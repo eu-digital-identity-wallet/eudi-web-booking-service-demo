@@ -1,8 +1,8 @@
 import { bookingService } from "@/client/services/booking";
+import { ModalStatus, useAppStore } from "@/client/store";
 import { BookingDto } from "@/shared";
 import { BookingCreateResponse } from "@/shared/interfaces";
 import { create } from "zustand";
-import useAppStore, { ModalStatus } from "./appStore";
 
 export interface FetchError {
   message: string;
