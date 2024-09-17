@@ -1,30 +1,43 @@
-# Install dependencies only when needed
-FROM node:20.9-alpine AS deps
+# Stage 1: Install dependencies and build the Next.js app
+FROM node:20-alpine AS builder
 WORKDIR /app
+ 
+# Install dependencies
 COPY package.json package-lock.json ./
 RUN npm ci
-
-# Rebuild the source code only when needed
-FROM node:20.9-alpine AS builder
-WORKDIR /app
+ 
+# Copy the rest of the application code
 COPY . .
-COPY --from=deps /app/node_modules ./node_modules
+#Initialize prisma 
 RUN npm run prisma:init
+# Build the Next.js application
 RUN npm run build
-
-# Production image, copy all the files and run next
-FROM node:20.9-alpine AS runner
+ 
+# Stage 2: Set up the production environment with Nginx
+FROM node:20-alpine
 WORKDIR /app
-
-ENV NODE_ENV production
-
-# You only need to copy next.config.js if you are NOT using the default configuration
-# COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/public ./public
+ 
+# Install Nginx
+RUN apk update && apk add nginx
+ 
+# Copy the built Next.js app and dependencies
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
+ 
+# Copy Nginx configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 3000
+RUN export $(grep -v '^#' .env.production.local | xargs)
 
-CMD ["npm", "start"]
+# Copy the startup script
+COPY start.sh /start.sh
+
+RUN chmod +x /start.sh
+ 
+# Expose port 80 for Nginx
+EXPOSE 80
+ 
+# Start the Next.js app and Nginx
+CMD ["/start.sh"]
