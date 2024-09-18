@@ -24,4 +24,16 @@ export const bookingDtoSchema = z
     }),
     carRental: z.boolean(), 
   })
-  .strict(); // strict mode to disallow extra fields
+  .strict()
+  .superRefine((data, ctx) => {
+    const checkInDate = new Date(data.checkIn);
+    const checkOutDate = new Date(data.checkOut);
+
+    if (checkOutDate <= checkInDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Check-out date must be later than check-in date.",
+        path: ["checkOut"], // Path for the specific field causing the error
+      });
+    }
+  }); // strict mode to disallow extra fields
