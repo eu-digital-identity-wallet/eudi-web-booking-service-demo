@@ -81,6 +81,7 @@ export class IssuerService {
       }
 
       const responseData = await response.json();
+      
       const otp =
         responseData.grants[
           "urn:ietf:params:oauth:grant-type:pre-authorized_code"
@@ -90,7 +91,7 @@ export class IssuerService {
       const responseCopy = { ...responseData };
       delete responseCopy.grants[
         "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-      ].tx_code;
+      ].tx_code.value;
 
       const urlEncodedResponse = encodeURIComponent(
         JSON.stringify(responseCopy)

@@ -1,6 +1,5 @@
 import { Fragment } from "react";
 import { ToastContainer } from "react-toastify";
-import Footer from "../organisms/Footer";
 import Header from "../organisms/Header";
 import { Box } from "@mui/material";
 
@@ -22,8 +21,7 @@ const AppLayout = ({ children }: AppLayoutProps) => (
     >
       {children}
     </Box>
-    <Footer />
-  </Fragment>
+   </Fragment>
 );
 
 export default AppLayout;
