@@ -7,7 +7,7 @@ import { ModalStatus, useAppStore } from "@/client/store";
 import { useBookingStore } from "@/client/store/bookingStore";
 import { deviceDetect } from "@/helpers/deviceDetect";
 import { BookingService } from "@/server";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";
 import QRCode from "react-qr-code";
@@ -27,7 +27,17 @@ export default function ConfirmationPage(props: AppProps) {
       <Box sx={{width: '100%', maxWidth:'100%',pb:1,pt:1,pl:3,pr:3}}> 
         <Modal 
           title="Scan to issue your reservation confirmation to EUDI Wallet" 
-          content={issueConfirmationRes?.url && <QRCode value={issueConfirmationRes.url} />} 
+          content={
+            <Box>
+              {issueConfirmationRes && 
+                <Box>
+                  {issueConfirmationRes?.url && <QRCode value={issueConfirmationRes.url} />}
+                  {issueConfirmationRes?.otp &&  <Typography variant="h5" color="textPrimary">OTP: {issueConfirmationRes.otp}</Typography>}
+                </Box>
+              }
+            </Box>
+           
+          } 
           handleClose={()=>{ changeModalStatus(ModalStatus.CLOSE) }}
         />
 
