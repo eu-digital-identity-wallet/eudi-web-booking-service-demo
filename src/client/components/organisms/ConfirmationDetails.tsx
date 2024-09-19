@@ -1,7 +1,8 @@
 import { BookingDetailsDto } from "@/shared";
 import CopyIcon from "../atoms/CopyIcon";
-import { Box, Typography, Button, IconButton } from "@mui/material";
+import { Box, Typography, Button, IconButton, CircularProgress } from "@mui/material";
 import Image from "next/image";
+import { useBookingStore } from "@/client/store/bookingStore";
 
 type ConfirmationDetailsProps = {
   details: BookingDetailsDto;
@@ -22,20 +23,23 @@ const ConfirmationDetails = ({
     numberOfGuests,
     reservationDate,
   } = details;
+  const { isLoading, issueConfirmationAsync  } = useBookingStore();
 
   return (
-    <Box>
+    <Box sx={{
+      width:'100%',
+    }} >
       <Box >
         <Typography variant="h5" fontWeight="bold">
-          🏨 Here is your reservation confirmation
+          Υour reservation confirmation
         </Typography>
       </Box>
 
       {/* Hotel Details */}
       <Box >
-        <Typography variant="h6" color="success.main" fontWeight="bold">
+        {/* <Typography variant="h6" color="success.main" fontWeight="bold">
           {hotel}
-        </Typography>
+        </Typography> */}
         <Box sx={{ mt: 2 }}>
           <Box sx={{ display: "flex" }}>
             <Box sx={{ mr: 5 }}>
@@ -96,22 +100,13 @@ const ConfirmationDetails = ({
               Issue your reservation confirmation to EUDI Wallet
             </Button>
           ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ display: "flex", flexDirection: "column", justifyContent: "center", px: 2, py: 4 }}
-              onClick={() => console.log("scan qr code")}
-            >
-              <Typography>Issue your reservation confirmation to EUDI Wallet</Typography>
-              <Image
-                loading="lazy"
-                src="/images/qrcode.svg"
-                alt="QR Code"
-                width={41}
-                height={41}
-                style={{ marginTop: 16 }}
-              />
-            </Button>
+              <Button variant="contained" color="primary"  onClick={async ()=> { await issueConfirmationAsync(id) }} sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", color: "white" }}>
+                  {isLoading && <CircularProgress size={20} sx={{ color: "white", mr: 1 }} />}
+                  <Typography sx={{ color: "white" }}>Issue your reservation confirmation to EUDI Wallet</Typography>
+                </Box>
+                <Image loading="lazy" src="/images/qrcode.svg" alt="QR Code" width={41} height={41} />
+              </Button>
           )}
         </Box>
       </Box>

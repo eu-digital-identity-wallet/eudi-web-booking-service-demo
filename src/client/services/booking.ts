@@ -19,4 +19,14 @@ const verifyBooking = async <T>(bookingId: string): Promise<T> => {
     })
     .then((res) => res);
 };
-export const bookingService = { createBooking, verifyBooking };
+
+const issueConfirmationBooking = async <T>(bookingId: string): Promise<T> => {
+  return apiFetch
+    .get<T>(URLS.confirmation(bookingId), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => res);
+};
+export const bookingService = { createBooking, verifyBooking, issueConfirmationBooking };
