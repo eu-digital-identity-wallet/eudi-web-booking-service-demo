@@ -1,7 +1,8 @@
 import { Fragment } from "react";
 import { ToastContainer } from "react-toastify";
-import Footer from "./Footer";
-import Header from "./Header";
+import Footer from "../organisms/Footer";
+import Header from "../organisms/Header";
+import { Box } from "@mui/material";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -11,7 +12,16 @@ const AppLayout = ({ children }: AppLayoutProps) => (
   <Fragment>
     <ToastContainer />
     <Header />
-    <div className="flex flex-col pb-10">{children}</div>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        bgcolor:"white",
+        pb: 4,  
+      }}
+    >
+      {children}
+    </Box>
     <Footer />
   </Fragment>
 );

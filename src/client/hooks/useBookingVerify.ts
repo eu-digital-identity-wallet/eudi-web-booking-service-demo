@@ -16,30 +16,37 @@ const fetcher = (bookingId: string) =>
 
 export const useBookingVerify = () => {
   const [status, setStatus] = useState(false);
-  const { changeModalStatus } = useAppStore();
+  const [polling, setPolling] = useState(true);  // Polling state
+  const { changeModalStatus, modal } = useAppStore(); // Get modal state
   const { resetBooking } = useBookingStore();
-
   const bookingId = useBookingStore(
     (state) => state.bookingCreateRes?.bookingId
   );
-  const [polling, setPolling] = useState(true);
-  const [timeElapsed, setTimeElapsed] = useState(0);
   const router = useRouter();
 
-  // Use SWR for fetching the status
+  // Reset polling and status when modal is reopened
+  useEffect(() => {
+    if (modal === ModalStatus.OPEN) {
+      setPolling(true);  // Start polling when modal opens
+      setStatus(false);   // Reset status
+    }
+  }, [modal]);
+
+  // Use SWR for polling the status
   const { data, error } = useSWR(
     bookingId,
     fetcher,
-    { refreshInterval: polling ? 5000 : 0 } // Poll every 5 seconds if polling is true
+    { refreshInterval: polling ? 1000 : 0 } // Poll every second if polling is true
   );
 
   // Function to stop polling manually
   const stopPolling = useCallback(() => {
-    setPolling(false);
-    resetBooking();
-    changeModalStatus(ModalStatus.CLOSE);
+    setPolling(false);  // Stop polling
+    resetBooking();     // Reset booking data
+    changeModalStatus(ModalStatus.CLOSE);  // Close modal
   }, [changeModalStatus, resetBooking]);
 
+  // Handle polling logic and state changes
   useEffect(() => {
     if (error) {
       toast.error(error.message || "An error occurred during verification.");
@@ -47,24 +54,20 @@ export const useBookingVerify = () => {
     }
 
     if (data?.status && bookingId) {
-      setStatus(true);
-      stopPolling(); // Stop polling if the status is true
-      router.push(PATHS.confirmation(bookingId)); // Navigate to the new post page
+      setStatus(true);     // Mark the status as verified
+      stopPolling();       // Stop polling after success
+      router.push(PATHS.confirmation(bookingId));  // Navigate to confirmation page
     }
 
-    // Handle timeout logic
-    const interval = setInterval(() => {
-      setTimeElapsed((prev) => prev + 5); // Increment time elapsed by 5 seconds
+    // Timeout logic to stop polling after 30 seconds
+    const timeout = setTimeout(() => {
+      stopPolling(); // Stop polling after 30 seconds
+    }, 30000);
 
-      if (timeElapsed >= 60) {
-        // Stop after 1 minute
-        stopPolling();
-        clearInterval(interval);
-      }
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [data, bookingId, timeElapsed, stopPolling, router, error]);
+    return () => {
+      clearTimeout(timeout); // Clear timeout on unmount
+    };
+  }, [data, bookingId, stopPolling, router, error]);
 
   return { status, error, stopPolling };
 };

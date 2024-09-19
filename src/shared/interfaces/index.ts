@@ -15,6 +15,6 @@ personalInfo?: PersonalInfo;
 }
 
 export interface IssueConfirmationRespone {
-  requestUri: string;
+  url: string;
   otp?: string; // Optional field
 }

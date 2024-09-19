@@ -47,24 +47,24 @@ export class VerifierService {
         id: bookingId,
         input_descriptors: [
           {
-            id: "eu.europa.ec.eudi.pid.1",
-            name: "EUDI PID",
-            purpose: "We need to verify your identity",
+            id: "org.iso.18013.5.1.mDL",
+            name: "Mobile Driving Licence",
+            purpose: "We need to verify your mobile driving licence",
             format: {
               mso_mdoc: { alg: ["ES256", "ES384", "ES512"] },
             },
             constraints: {
               fields: [
                 {
-                  path: ["$['eu.europa.ec.eudi.pid.1']['family_name']"],
+                  path: ["$['org.iso.18013.5.1']['family_name']"],
                   intent_to_retain: true,
                 },
                 {
-                  path: ["$['eu.europa.ec.eudi.pid.1']['given_name']"],
+                  path: ["$['org.iso.18013.5.1']['given_name']"],
                   intent_to_retain: true,
                 },
                 {
-                  path: ["$['eu.europa.ec.eudi.pid.1']['birth_date']"],
+                  path: ["$['org.iso.18013.5.1']['birth_date']"],
                   intent_to_retain: true,
                 },
               ],
@@ -136,7 +136,7 @@ export class VerifierService {
     date_of_birth: string | null;
   } {
     const issuerSigned = decodedData?.documents?.[0]?.issuerSigned;
-    const namespaces = issuerSigned?.nameSpaces?.["eu.europa.ec.eudi.pid.1"];
+    const namespaces = issuerSigned?.nameSpaces?.["org.iso.18013.5.1"];
 
     if (!namespaces)
       return { family_name: null, given_name: null, date_of_birth: null };

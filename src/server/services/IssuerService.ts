@@ -98,7 +98,7 @@ export class IssuerService {
 
       // Return the final object
       return {
-        requestUri: `openid-credential-offer://?credential_offer=${urlEncodedResponse}`,
+        url: `openid-credential-offer://?credential_offer=${urlEncodedResponse}`,
         otp,
       };
     } catch (error) {
