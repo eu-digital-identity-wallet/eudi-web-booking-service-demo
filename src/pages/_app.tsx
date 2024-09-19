@@ -6,7 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import type { AppContext, AppProps } from 'next/app';import "react-toastify/dist/ReactToastify.css";
 
 import { createTheme } from '@mui/material/styles';
-import AppLayout from '@/client/components/templates/AppLayout';
+import AppLayout from '@/client/components/organisms/AppLayout';
 
 const theme = createTheme({
   palette: {
