@@ -4,6 +4,7 @@ import { Inject, Service } from "typedi";
 import { JWTPayload } from "../types";
 import { JWTService } from "./JWTService";
 import { KeystoreService } from "./KeystoreService";
+import { env } from "@/env.mjs";
 
 @Service()
 export class IssuerService {
@@ -29,8 +30,8 @@ export class IssuerService {
 
     // Prepare the JWT payload
     const jwtPayload: JWTPayload = {
-      iss: process.env.NEXT_PUBLIC_APP_URL!,
-      aud: process.env.ISSUER_API_URL!,
+      iss: env.NEXT_PUBLIC_APP_URI,
+      aud: env.ISSUER_API_URL,
       grants: ["urn:ietf:params:oauth:grant-type:pre-authorized_code"],
       credentials: [
         {

@@ -34,7 +34,6 @@ export const useBookingStore = create<IBookingStore>()((set) => ({
       );
       set({ isLoading: false, bookingCreateRes: res });
 
-      useAppStore.getState().changeModalStatus(ModalStatus.OPEN);
     } catch (err) {
       let errorMessage = "Unknown error occurred";
       if (err instanceof Error) {

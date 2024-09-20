@@ -10,6 +10,11 @@ export const bookingIdSchema = z
   .string()
   .cuid({ message: "Invalid bookingId format" });
 
+export const bookingVerificationSchema = z.object({
+  bookingID: z.string().cuid({ message: "Invalid bookingID format" }),
+  responseCode: z.string().optional(),  // request_code is now optional
+});
+
 export const bookingDtoSchema = z
   .object({
     hotel: z.string().min(1).max(100),
