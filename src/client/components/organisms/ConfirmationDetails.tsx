@@ -24,7 +24,7 @@ const ConfirmationDetails = ({
     reservationDate,
   } = details;
   const { isLoading, issueConfirmationAsync  } = useBookingStore();
-
+console.log(id);
   return (
     <Box sx={{
       width:'100%',

@@ -34,7 +34,7 @@ export default function Home(props: AppProps) {
   <Box sx={{width: '100%', maxWidth:'100%',pb:1,pt:1,pl:3,pr:3}}>     
         <Modal 
           title="Verify your credentials" 
-          content={bookingCreateRes?.url && <QRCode value={bookingCreateRes.url} />} 
+          content={bookingCreateRes?.url && <QRCode value={bookingCreateRes.url} size={333}  />} 
           handleClose={handleCloseModal}
           />
         <HotelLocation />

@@ -12,7 +12,7 @@ const PinIcon: React.FC<IconProps> = ({ className, ...props }) => {
       className={className}
       viewBox="0 0 24 24"
       sx={{
-        fontSize: 24, // Default size equivalent to "w-6 h-6" in Tailwind
+        fontSize: 24, 
         ...(props.sx || {}), // Allow additional sx styles from props
       }}
     >

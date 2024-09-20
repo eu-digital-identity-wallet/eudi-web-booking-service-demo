@@ -15,7 +15,7 @@ import Container from "typedi";
 import { array } from "zod";
   
 export default function ConfirmationPage(props: AppProps) {
-  const { id, deviceType, hasError, ...bookingDetails } = props.pageProps;
+  const { bookingID, deviceType, hasError, ...bookingDetails } = props.pageProps;
   const {isLoading,  issueConfirmationRes } = useBookingStore();
   const {changeModalStatus } = useAppStore();
 
@@ -32,8 +32,7 @@ export default function ConfirmationPage(props: AppProps) {
             <Box>
               {issueConfirmationRes && 
                 <Box>
-                  {issueConfirmationRes?.url && <QRCode value={issueConfirmationRes.url}  size={300} />} 
-                  {issueConfirmationRes?.url && <Typography >{issueConfirmationRes.url}</Typography>} 
+                  {issueConfirmationRes?.url && <QRCode value={issueConfirmationRes.url}  size={333} />} 
                   {issueConfirmationRes?.otp &&  <Typography variant="h5" color="textPrimary">OTP: {issueConfirmationRes.otp}</Typography>}
                 </Box>
               }
@@ -54,7 +53,7 @@ export default function ConfirmationPage(props: AppProps) {
             }}
           >
           
-          <ConfirmationDetails details={bookingDetails} id={id} deviceType={deviceType} />
+          <ConfirmationDetails details={bookingDetails} id={bookingID} deviceType={deviceType} />
           
           <Box sx={{ width: "25%", p: 2 }}>
           {bookingDetails.carRental && (
@@ -86,8 +85,7 @@ export const getServerSideProps: GetServerSideProps = async (
 
   const bookingService = Container.get(BookingService);
   let properties = {};
-  try {
-console.log(responseCode)
+  try { 
     if (responseCode) {
       // Trigger the booking service with the request_code
       const verify = await bookingService.bookingVerificationStatus({bookingID,responseCode});
@@ -112,6 +110,7 @@ console.log(responseCode)
     }
 
     const bookingDetails = await bookingService.bookingDetails(bookingID);
+
     if (bookingDetails) {
       properties = { bookingID, deviceType, ...bookingDetails, hasError: false };
     } else {

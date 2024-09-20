@@ -26,7 +26,7 @@ export default async function handler(
 
     // Fetch the booking verification status from the service
     const bookingVerificationStatus =
-      await bookingService.bookingVerificationStatus(id);
+      await bookingService.bookingVerificationStatus({bookingID:id});
 
     // Handle cases where no status is returned (assuming this might happen)
     if (
