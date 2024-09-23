@@ -1,3 +1,4 @@
+import React from "react";
 import Custom404 from "../404";
 
 export default function Page() {

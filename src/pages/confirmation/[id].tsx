@@ -7,7 +7,7 @@ import { ModalStatus, useAppStore } from "@/client/store";
 import { useBookingStore } from "@/client/store/bookingStore";
 import { deviceDetect } from "@/helpers/deviceDetect";
 import { BookingService } from "@/server";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid2 as Grid, Typography } from "@mui/material";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";
 import QRCode from "react-qr-code";
@@ -50,17 +50,17 @@ export default function ConfirmationPage(props: AppProps) {
 
       <Box sx={{ width: "100%", mx: "auto" }}>
         <Grid container>
-          <Grid item sm={12} md={5}>
+          <Grid component={Box}>
             <ReservationConfirmation
               details={bookingDetails}
               id={bookingID}
               deviceType={deviceType}
             />
           </Grid>
-          <Grid item sm={12} md={3}>
+          <Grid component={Box}>
             {bookingDetails.carRental && <CarInformation />}
           </Grid>
-          <Grid sx={{ width: "100%" }} item md={4}>
+          <Grid component={Box}>
             <Sidebar />
           </Grid>
         </Grid>

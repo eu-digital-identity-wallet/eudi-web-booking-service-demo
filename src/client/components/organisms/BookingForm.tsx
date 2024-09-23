@@ -97,6 +97,7 @@ export const BookingForm: React.FC = () => {
                 <Button
                   variant="contained"
                   color="primary"
+                  type="submit"
                   sx={{
                     display: "flex",
                     flexDirection: "column",
