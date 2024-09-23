@@ -1,17 +1,16 @@
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
-import { useForm, FormProvider } from "react-hook-form";
-import { BookingGuestInfo } from "../molecules/BookingGuestInfo";
-import HotelDescription from "../molecules/HotelDescription";
-import { useBookingStore } from "@/client/store/bookingStore";
 import { ModalStatus, useAppStore } from "@/client/store";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useBookingStore } from "@/client/store/bookingStore";
 import { bookingDtoSchema } from "@/server/schemas/booking";
 import { BookingDto, Hotel } from "@/shared";
-import Image from "next/image";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import router from "next/router";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Image from "next/image";
 import { useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { BookingGuestInfo } from "../molecules/BookingGuestInfo";
+import HotelDescription from "../molecules/HotelDescription";
 
 export const BookingForm: React.FC = () => {
   const methods = useForm<BookingDto>({
@@ -33,31 +32,41 @@ export const BookingForm: React.FC = () => {
   // Watch for changes in bookingCreateRes
   useEffect(() => {
     if (bookingCreateRes?.url) {
-      if (deviceType === 'desktop') {
+      if (deviceType === "desktop") {
         changeModalStatus(ModalStatus.OPEN);
       } else {
-        window.location.href = bookingCreateRes?.url;  // Navigate to the confirmation page
+        window.location.href = bookingCreateRes?.url; // Navigate to the confirmation page
       }
     }
   }, [bookingCreateRes?.url, deviceType, changeModalStatus]);
-  
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-
-    <FormProvider {...methods}>
-      <Box component="form" onSubmit={methods.handleSubmit(onSubmit)} sx={{
+      <FormProvider {...methods}>
+        <Box
+          component="form"
+          onSubmit={methods.handleSubmit(onSubmit)}
+          sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             gap: { xs: 0, md: 3 },
-            
-          }} >
-         
-          <Box sx={{ width: { md:'calc(400px)', xs: "100%" }, mt: { xs: 10, md: 0 } }}>
+          }}
+        >
+          <Box
+            sx={{
+              width: { md: "calc(400px)", xs: "100%" },
+              mt: { xs: 10, md: 0 },
+            }}
+          >
             <BookingGuestInfo />
-           
           </Box>
 
-          <Box sx={{ width: { md: "calc(100%-550px)", xs: "100%" }, mt: { xs: 10, md: 0 } }}>
+          <Box
+            sx={{
+              width: { md: "calc(100%-550px)", xs: "100%" },
+              mt: { xs: 10, md: 0 },
+            }}
+          >
             <HotelDescription />
             <Box
               sx={{
@@ -71,7 +80,8 @@ export const BookingForm: React.FC = () => {
                 margin: "auto",
               }}
             >
-              To continue booking your travel plan, issue the requested credentials using EUDI Wallet:
+              To continue booking your travel plan, issue the requested
+              credentials using EUDI Wallet:
             </Box>
             <Box
               sx={{
@@ -84,24 +94,67 @@ export const BookingForm: React.FC = () => {
               }}
             >
               {deviceType === "mobile" ? (
-                <Button variant="contained" color="primary" type="submit" sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
-                  <Typography sx={{ color: "white" }} >Book using EUDI Wallet</Typography>
-                  <Image loading="lazy" src="/images/eudiwallet.svg" alt="EUDI Wallet" width={48} height={48} />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    p: 2,
+                  }}
+                >
+                  <Typography color="white">Launch EUDI Wallet</Typography>
+                  <Image
+                    loading="lazy"
+                    src="/images/eudiwallet.svg"
+                    alt="EUDI Wallet"
+                    width={48}
+                    height={48}
+                  />
                 </Button>
               ) : (
-                <Button variant="contained" color="primary" type="submit" sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", color: "white" }}>
-                    {isLoading && <CircularProgress size={20} sx={{ color: "white", mr: 1 }} />}
-                    <Typography sx={{ color: "white" }}>Scan QR code</Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    p: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                    }}
+                  >
+                    {isLoading && (
+                      <CircularProgress
+                        size={20}
+                        sx={{ color: "white", mr: 1 }}
+                      />
+                    )}
+                    <Typography sx={{ color: "white" }}>
+                      Scan QR code
+                    </Typography>
                   </Box>
-                  <Image loading="lazy" src="/images/qrcode.svg" alt="QR Code" width={41} height={41} />
+                  <Image
+                    loading="lazy"
+                    src="/images/qrcode.svg"
+                    alt="QR Code"
+                    width={41}
+                    height={41}
+                  />
                 </Button>
               )}
             </Box>
           </Box>
         </Box>
-       
-    </FormProvider>
+      </FormProvider>
     </LocalizationProvider>
   );
 };
