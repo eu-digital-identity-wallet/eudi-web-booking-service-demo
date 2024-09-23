@@ -7,12 +7,10 @@ const Sidebar: React.FC = () => {
     <Box
       sx={{
         w: "100%",
-        p: 2,
         display: "flex",
         flexDirection: "column",
-        flexWrap: "wrap",
-        alignItems: { sm: "center", md: "end" },
-        justifyContent: { sm: "center", md: "end" },
+        flexWrap: { xs: "nowrap" },
+        alignItems: { md: "flex-end", xs: "center" },
       }}
     >
       <Image src="/images/sidebar.png" alt="reviews" width={259} height={454} />
