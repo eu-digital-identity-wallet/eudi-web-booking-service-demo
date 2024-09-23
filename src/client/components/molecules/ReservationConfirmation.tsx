@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import AccommodationIcon from "../atoms/AccommodationIcon";
 import CopyIcon from "../atoms/CopyIcon";
 
 type Props = { details: BookingDetailsDto; id: string; deviceType: string };
@@ -41,9 +42,20 @@ export default function ReservationConfirmation({
   };
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <Typography fontWeight={"bold"}>
-        Here is your resenvation confirmation
-      </Typography>
+      <Box
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "4px",
+        }}
+      >
+        <AccommodationIcon />
+        <Typography fontWeight={"bold"}>
+          Here is your resenvation confirmation
+        </Typography>
+      </Box>
+
       {/* Hotel Details */}
       <Box sx={{ mt: 2 }}>
         <Typography fontWeight="bold" color="green">
