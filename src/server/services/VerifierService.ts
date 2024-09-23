@@ -78,21 +78,25 @@ export class VerifierService {
     };
 
     if (isMobile) {
-      payload.wallet_response_redirect_uri_template = `${env.NEXT_PUBLIC_APP_URL}/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
+      payload.wallet_response_redirect_uri_template = `${env.NEXT_PUBLIC_APP_URI}/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
     }
 
     return payload;
   }
 
   public async checkVerification(
-    crossDeviceTransactionId: string
+    crossDeviceTransactionId: string,
+    responseCode?:string
   ): Promise<VerificationResponse> {
     if (!crossDeviceTransactionId) {
       throw new Error("Transaction ID is undefined.");
     }
 
     try {
-      const url = `${env.VERIFIER_API_URL}/ui/presentations/${crossDeviceTransactionId}`;
+      let url = `${env.VERIFIER_API_URL}/ui/presentations/${crossDeviceTransactionId}`;
+      if(responseCode){
+        url += `?response_code=${responseCode}`;
+      }
       const response = await fetch(url, {
         method: "GET",
         headers: { Accept: "application/json" },

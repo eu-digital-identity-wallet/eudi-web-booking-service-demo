@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import Sidebar from "@/client/components/atoms/Sidebar";
 import { BookingForm } from "@/client/components/organisms/BookingForm";
 import HotelLocation from "@/client/components/organisms/HotelLocation";
-import { ModalStatus, useAppStore } from "@/client/store";
-import { deviceDetect } from "@/helpers/deviceDetect";
+import { useAppStore } from "@/client/store";
+import { getDeviceTypeProps } from "@/helpers/deviceDetect";
 import { GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";
 import { Box, Container } from "@mui/material";
@@ -13,8 +13,7 @@ import QRCode from "react-qr-code";
 import { useBookingVerify } from "@/client/hooks/useBookingVerify";
 
 export function getServerSideProps(context: GetServerSidePropsContext) {
-  const deviceType = deviceDetect(context.req.headers["user-agent"] ?? "");
-  return { props: { deviceType } };
+  return getDeviceTypeProps(context);
 }
 
 export default function Home(props: AppProps) {
@@ -35,7 +34,7 @@ export default function Home(props: AppProps) {
   <Box sx={{width: '100%', maxWidth:'100%',pb:1,pt:1,pl:3,pr:3}}>     
         <Modal 
           title="Verify your credentials" 
-          content={bookingCreateRes?.url && <QRCode value={bookingCreateRes.url} />} 
+          content={bookingCreateRes?.url && <QRCode value={bookingCreateRes.url} size={333}  />} 
           handleClose={handleCloseModal}
           />
         <HotelLocation />

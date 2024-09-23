@@ -12,7 +12,7 @@ const HeartIcon: React.FC<IconProps> = ({ className, ...props }) => {
       className={className}
       viewBox="0 0 24 24"
       sx={{
-        fontSize: 24, // Default size (equivalent to Tailwind size-6)
+        fontSize: 24,  
         ...(props.sx || {}), // Allow custom `sx` prop to override styles
       }}
     >

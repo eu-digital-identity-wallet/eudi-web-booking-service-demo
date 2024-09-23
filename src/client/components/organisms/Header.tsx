@@ -31,7 +31,7 @@ const Header: React.FC = () => {
         alt="Travel destination"
         sx={{
           width: '100%',
-          aspectRatio: '12.5', // Aspect ratio like the one in Tailwind
+          aspectRatio: '12.5', 
           maxWidth: '100%',
         }}
       />

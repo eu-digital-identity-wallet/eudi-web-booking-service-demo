@@ -3,13 +3,15 @@ import { useForm, FormProvider } from "react-hook-form";
 import { BookingGuestInfo } from "../molecules/BookingGuestInfo";
 import HotelDescription from "../molecules/HotelDescription";
 import { useBookingStore } from "@/client/store/bookingStore";
-import { useAppStore } from "@/client/store";
+import { ModalStatus, useAppStore } from "@/client/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { bookingDtoSchema } from "@/server/schemas/booking";
 import { BookingDto, Hotel } from "@/shared";
 import Image from "next/image";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import router from "next/router";
+import { useEffect } from "react";
 
 export const BookingForm: React.FC = () => {
   const methods = useForm<BookingDto>({
@@ -19,7 +21,8 @@ export const BookingForm: React.FC = () => {
       location: Hotel.location,
     },
   });
-  const { isLoading, createBookingAsync } = useBookingStore();
+  const { changeModalStatus, modal } = useAppStore(); // Get modal state
+  const { isLoading, createBookingAsync, bookingCreateRes } = useBookingStore();
   const deviceType = useAppStore((state) => state.deviceType);
 
   const onSubmit = async (data: BookingDto) => {
@@ -27,6 +30,17 @@ export const BookingForm: React.FC = () => {
     await createBookingAsync(data);
   };
 
+  // Watch for changes in bookingCreateRes
+  useEffect(() => {
+    if (bookingCreateRes?.url) {
+      if (deviceType === 'desktop') {
+        changeModalStatus(ModalStatus.OPEN);
+      } else {
+        window.location.href = bookingCreateRes?.url;  // Navigate to the confirmation page
+      }
+    }
+  }, [bookingCreateRes?.url, deviceType, changeModalStatus]);
+  
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
 
@@ -70,8 +84,8 @@ export const BookingForm: React.FC = () => {
               }}
             >
               {deviceType === "mobile" ? (
-                <Button variant="contained" color="primary" sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
-                  <Typography>Book using EUDI Wallet</Typography>
+                <Button variant="contained" color="primary" type="submit" sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
+                  <Typography sx={{ color: "white" }} >Book using EUDI Wallet</Typography>
                   <Image loading="lazy" src="/images/eudiwallet.svg" alt="EUDI Wallet" width={48} height={48} />
                 </Button>
               ) : (

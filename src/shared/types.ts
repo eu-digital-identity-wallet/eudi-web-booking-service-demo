@@ -1,4 +1,4 @@
-import { bookingDtoSchema } from "@/server/schemas";
+import { bookingDtoSchema, bookingVerificationSchema } from "@/server/schemas";
 import { z } from "zod";
 
 //this is what user can submit
@@ -10,3 +10,6 @@ export type BookingDetailsDto = BookingDto & {
   guestDateOfBirth: string | null; // Can be Date or ISO string based on your usage
   reservationDate: string;
 };
+
+
+export type BookingVerificationParams = z.infer<typeof bookingVerificationSchema>;

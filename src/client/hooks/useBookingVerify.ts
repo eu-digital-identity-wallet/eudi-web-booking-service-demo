@@ -36,14 +36,15 @@ export const useBookingVerify = () => {
   const { data, error } = useSWR(
     bookingId,
     fetcher,
-    { refreshInterval: polling ? 1000 : 0 } // Poll every second if polling is true
+    { refreshInterval: polling ? 3000 : 0 } // Poll every second if polling is true
   );
 
   // Function to stop polling manually
   const stopPolling = useCallback(() => {
+    changeModalStatus(ModalStatus.CLOSE);
     setPolling(false);  // Stop polling
     resetBooking();     // Reset booking data
-    changeModalStatus(ModalStatus.CLOSE);  // Close modal
+     // Close modal
   }, [changeModalStatus, resetBooking]);
 
   // Handle polling logic and state changes
@@ -55,14 +56,14 @@ export const useBookingVerify = () => {
 
     if (data?.status && bookingId) {
       setStatus(true);     // Mark the status as verified
-      stopPolling();       // Stop polling after success
+      stopPolling(); 
       router.push(PATHS.confirmation(bookingId));  // Navigate to confirmation page
     }
 
     // Timeout logic to stop polling after 30 seconds
     const timeout = setTimeout(() => {
       stopPolling(); // Stop polling after 30 seconds
-    }, 30000);
+    }, 60000);
 
     return () => {
       clearTimeout(timeout); // Clear timeout on unmount

@@ -1,4 +1,5 @@
-export * from "./BookingDto";
+export * from "./types";
+export * from "./interfaces";
 
 export const Hotel = {
   name: "Utopia",
