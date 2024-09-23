@@ -43,10 +43,10 @@ export default function Home(props: AppProps) {
       />
       <HotelLocation />
       <Grid container spacing={3}>
-        <Grid component={Box} size={{ md: 9.5 }}>
+        <Grid component={Box} size={{ md: 8, lg:9 }} >
           <BookingForm />
         </Grid>
-        <Grid component={Box} size={{ md: 2.5 }} sx={{ width: "100%" }}>
+        <Grid component={Box} size={{ md: 4, lg:3 }} sx={{ width: "100%" }}>
           <Sidebar />
         </Grid>
       </Grid>

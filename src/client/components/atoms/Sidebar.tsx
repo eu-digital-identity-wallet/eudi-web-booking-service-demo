@@ -9,8 +9,8 @@ const Sidebar: React.FC = () => {
         w: "100%",
         display: "flex",
         flexDirection: "column",
-        flexWrap: { xs: "nowrap" },
-        alignItems: { md: "flex-end", xs: "center" },
+        flexWrap: { xs: "nowrap" , s: "nowrap"  },
+        alignItems: { md: "flex-end", s: "center" , xs: "center" },
       }}
     >
       <Image src="/images/sidebar.png" alt="reviews" width={259} height={454} />

@@ -56,56 +56,45 @@ export class BookingService {
   }
 
   @ValidateInput(bookingVerificationSchema)
-  public async bookingVerificationStatus({
-    bookingID,
-    responseCode,  
-  }: BookingVerificationParams): Promise<boolean> {
-    const record = await this.bookingRepository.findById(bookingID);
-    if (record?.crossDeviceTransactionId) {
-      const verification = await this.verifier.checkVerification(
-        record.crossDeviceTransactionId
-      );
-      if (
-        verification.status === true &&
-        verification.personalInfo?.date_of_birth &&
-        verification.personalInfo.family_name &&
-        verification.personalInfo.given_name
-      ) {
-        record.guestDateOfBirth = new Date(
-          verification.personalInfo.date_of_birth
-        );
-        record.guestFamilyName = verification.personalInfo.family_name;
-        record.guestGivenName = verification.personalInfo.given_name;
+public async bookingVerificationStatus({
+  bookingID,
+  responseCode,  
+}: BookingVerificationParams): Promise<boolean> {
+  const record = await this.bookingRepository.findById(bookingID);
 
-        await this.bookingRepository.update(record.id, record);
+  // Helper function to handle the common verification logic
+  const handleVerification = async (transactionId: string, responseCode?: string) => {
+    const verification = await this.verifier.checkVerification(transactionId, responseCode);
+    if (
+      record && 
+      verification.status === true &&
+      verification.personalInfo?.date_of_birth &&
+      verification.personalInfo.family_name &&
+      verification.personalInfo.given_name
+    ) {
+      record.guestDateOfBirth = new Date(verification.personalInfo.date_of_birth);
+      record.guestFamilyName = verification.personalInfo.family_name;
+      record.guestGivenName = verification.personalInfo.given_name;
 
-        return true;
-      }
-    }else if(record?.sameDeviceTransactionId){
-      const verification = await this.verifier.checkVerification(
-        record.sameDeviceTransactionId,
-        responseCode
-      ); 
-      console.log(verification);
-      if (
-        verification.status === true &&
-        verification.personalInfo?.date_of_birth &&
-        verification.personalInfo.family_name &&
-        verification.personalInfo.given_name
-      ) {
-        record.guestDateOfBirth = new Date(
-          verification.personalInfo.date_of_birth
-        );
-        record.guestFamilyName = verification.personalInfo.family_name;
-        record.guestGivenName = verification.personalInfo.given_name;
-
-        await this.bookingRepository.update(record.id, record);
-
-        return true;
-      }
+      await this.bookingRepository.update(record.id, record);
+      return true;
     }
     return false;
+  };
+
+  // Handle crossDeviceTransactionId
+  if (record?.crossDeviceTransactionId) {
+    return await handleVerification(record.crossDeviceTransactionId);
   }
+  
+  // Handle sameDeviceTransactionId
+  if (record?.sameDeviceTransactionId) {
+    return await handleVerification(record.sameDeviceTransactionId, responseCode);
+  }
+
+  return false;
+}
+
 
   @ValidateInput(bookingIdSchema)
   public async bookingIssueConfirmation(

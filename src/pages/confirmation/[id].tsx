@@ -7,11 +7,13 @@ import { ModalStatus, useAppStore } from "@/client/store";
 import { useBookingStore } from "@/client/store/bookingStore";
 import { deviceDetect } from "@/helpers/deviceDetect";
 import { BookingService } from "@/server";
-import { Box, Grid2 as Grid, Typography } from "@mui/material";
+import { Box, Button, Grid2 as Grid, Typography } from "@mui/material";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";
 import QRCode from "react-qr-code";
 import Container from "typedi";
+import Image from "next/image";
+
 
 export default function ConfirmationPage(props: AppProps) {
   const { bookingID, deviceType, hasError, ...bookingDetails } =
@@ -24,16 +26,39 @@ export default function ConfirmationPage(props: AppProps) {
   return (
     <Box sx={{ width: "100%", maxWidth: "100%", pb: 1, pt: 1, pl: 3, pr: 3 }}>
       <Modal
-        title="Scan to issue your reservation confirmation to EUDI Wallet"
+        title={`${(deviceType==='desktop')?'Scan':'Click the link'} to issue your reservation confirmation to EUDI Wallet`}
         content={
           <Box>
             {issueConfirmationRes && (
               <Box>
-                {issueConfirmationRes?.url && (
+                {issueConfirmationRes?.url && deviceType==='desktop' && (
                   <QRCode value={issueConfirmationRes.url} size={333} />
                 )}
+                {issueConfirmationRes?.url && deviceType==='mobile' && (
+                  <Button
+                  color="primary"
+                  variant="contained"
+                  sx={{ p: 2, fontWeight: "bold" }}
+                  onClick={() => {
+                    // Navigate to the deep link when the button is clicked
+                    window.location.href = issueConfirmationRes.url;
+                  }}
+                  startIcon={
+                     (
+                      <Image
+                        src="/images/eudiwallet.svg"
+                        alt="reviews"
+                        width={40}
+                        height={40}
+                      />
+                    )
+                  }
+                 > 
+                  <Typography color={'white'} >Open in wallet</Typography>
+                </Button>
+                )}
                 {issueConfirmationRes?.otp && (
-                  <Typography variant="h5" color="textPrimary">
+                  <Typography variant="h5" mt={2} color="textPrimary">
                     OTP: {issueConfirmationRes.otp}
                   </Typography>
                 )}
@@ -48,23 +73,23 @@ export default function ConfirmationPage(props: AppProps) {
 
       <HotelLocation />
 
-      <Box sx={{ width: "100%", mx: "auto" }}>
-        <Grid container>
-          <Grid component={Box}>
-            <ReservationConfirmation
-              details={bookingDetails}
-              id={bookingID}
-              deviceType={deviceType}
-            />
-          </Grid>
-          <Grid component={Box}>
-            {bookingDetails.carRental && <CarInformation />}
-          </Grid>
-          <Grid component={Box}>
-            <Sidebar />
-          </Grid>
+     
+      <Grid container spacing={3}>
+        <Grid component={Box} size={{ md: 5, lg:6 }}>
+          <ReservationConfirmation
+            details={bookingDetails}
+            id={bookingID}
+            deviceType={deviceType}
+          />
         </Grid>
-      </Box>
+        <Grid component={Box} size={{ md: 3, lg:3 }} >
+          {bookingDetails.carRental && <CarInformation />}
+        </Grid>
+        <Grid component={Box} size={{ md: 4, lg:3 }} sx={{ width: "100%" }} >
+          <Sidebar />
+        </Grid>
+      </Grid>
+       
     </Box>
   );
 }
@@ -75,10 +100,13 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   const deviceType = deviceDetect(context.req.headers["user-agent"] ?? "");
 
-  // Extract id from URL params
-  const { id: bookingID } = context.params as { id: string };
-  // Extract request_code from query parameters
-  const { response_code } = context.query;
+  const bookingID = Array.isArray(context?.params?.id) ? context?.params?.id[0] : context?.params?.id ;
+  if (!bookingID) {
+    return {
+      notFound: true, // This triggers the 404 page in Next.js
+    };
+  }
+  const response_code = context?.query?.response_code;
   const responseCode = Array.isArray(response_code)
     ? response_code[0]
     : response_code;
