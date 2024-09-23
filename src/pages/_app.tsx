@@ -1,11 +1,12 @@
 import { AppCacheProvider } from "@mui/material-nextjs/v14-pagesRouter";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-import type { AppProps } from "next/app";
+import type { AppContext, AppProps } from "next/app";
 import "react-toastify/dist/ReactToastify.css";
 
 import AppLayout from "@/client/components/organisms/AppLayout";
 import { createTheme } from "@mui/material/styles";
+import { validateEnv } from "@/env.mjs";
 
 const theme = createTheme({
   palette: {
@@ -90,6 +91,7 @@ const theme = createTheme({
   },
 });
 
+
 export default function App(props: AppProps) {
   const { Component, ...rest } = props;
   return (
@@ -103,3 +105,17 @@ export default function App(props: AppProps) {
     </AppCacheProvider>
   );
 }
+
+App.getInitialProps = async (appContext: AppContext) => {
+  // Only validate on the server side
+  if (typeof window === 'undefined') {
+    validateEnv();
+  }
+
+  // Call the default implementation of getInitialProps
+  const appProps = await import('next/app').then(({ default: NextApp }) =>
+    NextApp.getInitialProps(appContext)
+  );
+
+  return { ...appProps };
+};
