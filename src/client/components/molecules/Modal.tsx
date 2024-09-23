@@ -1,18 +1,15 @@
-import React from "react";
-import { Box, Button, Typography, Modal as MuiModal } from "@mui/material";
-import QRCode from "react-qr-code";
 import { ModalStatus, useAppStore } from "@/client/store";
-import { useBookingVerify } from "../../hooks/useBookingVerify";
+import { Box, Button, Modal as MuiModal, Typography } from "@mui/material";
+import React from "react";
 
 interface ModalProps {
-  title: string;  // Accept title as a prop
-  content: React.ReactNode;  // Accept content as a prop
-  handleClose: () => void;  // Close function prop
+  title: string; // Accept title as a prop
+  content: React.ReactNode; // Accept content as a prop
+  handleClose: () => void; // Close function prop
 }
 
 const Modal: React.FC<ModalProps> = ({ title, content, handleClose }) => {
   const { modal } = useAppStore();
-  
 
   if (modal === ModalStatus.CLOSE) return null;
 
@@ -35,11 +32,11 @@ const Modal: React.FC<ModalProps> = ({ title, content, handleClose }) => {
         }}
       >
         <Typography id="modal-title" variant="h5" fontWeight="bold" mb={2}>
-          {title}  {/* Display the title prop */}
+          {title} {/* Display the title prop */}
         </Typography>
 
         <Box id="modal-description" sx={{ textAlign: "center", mb: 4 }}>
-          {content}  {/* Display the content prop */}
+          {content} {/* Display the content prop */}
         </Box>
 
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>

@@ -73,13 +73,11 @@ export async function post<T, U>(
  * Object containing methods for making HTTP requests.
  *
  * This object provides convenience methods for making HTTP requests using the `http` function.
- * It includes methods for GET, POST, PUT, and DELETE requests.
+ * It includes methods for GET, POST requests.
  *
  * @type {{
  *   post: <T, U>(path: string, body: T, config?: RequestInit) => Promise<U>;
- *   put: <T, U>(path: string, body: T, config?: RequestInit) => Promise<U>;
  *   get: <T>(path: string, config?: RequestInit) => Promise<T>;
- *   del: <T>(path: string, config?: RequestInit) => Promise<T>;
  * }}
  */
 export const apiFetch = {
