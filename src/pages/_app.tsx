@@ -105,17 +105,3 @@ export default function App(props: AppProps) {
     </AppCacheProvider>
   );
 }
-
-App.getInitialProps = async (appContext: AppContext) => {
-  // Only validate on the server side
-  if (typeof window === 'undefined') {
-    validateEnv();
-  }
-
-  // Call the default implementation of getInitialProps
-  const appProps = await import('next/app').then(({ default: NextApp }) =>
-    NextApp.getInitialProps(appContext)
-  );
-
-  return { ...appProps };
-};
