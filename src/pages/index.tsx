@@ -33,20 +33,24 @@ export default function Home(props: AppProps) {
   return (
     <Box sx={{ width: "100%", maxWidth: "100%", pb: 1, pt: 1, pl: 3, pr: 3 }}>
       <Modal
-        title="Verify your credentials"
+        title='Verify your credentials'
         content={
           bookingCreateRes?.url && (
-            <QRCode value={bookingCreateRes.url} size={333} />
+            <QRCode
+              value={bookingCreateRes.url}
+              size={333}
+              fgColor={"#1266D8"}
+            />
           )
         }
         handleClose={handleCloseModal}
       />
       <HotelLocation />
       <Grid container spacing={3}>
-        <Grid component={Box} size={{ md: 8, lg:9 }} >
+        <Grid component={Box} size={{ md: 8, lg: 9 }}>
           <BookingForm />
         </Grid>
-        <Grid component={Box} size={{ md: 4, lg:3 }} sx={{ width: "100%" }}>
+        <Grid component={Box} size={{ md: 4, lg: 3 }} sx={{ width: "100%" }}>
           <Sidebar />
         </Grid>
       </Grid>
