@@ -12,6 +12,11 @@ export default function CarInformation() {
     link.click();
   };
 
+  const openInNewTab = (url: string) => {
+    const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+    if (newWindow) newWindow.opener = null;
+  };
+
   return (
     <Box
       sx={{
@@ -33,13 +38,14 @@ export default function CarInformation() {
 
       {/* Car Image and Information */}
 
-      <Image src="/images/car.png" alt="car" width={217} height={145} />
-      <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+      <Image src='/images/car.png' alt='car' width={217} height={145} />
+      <Typography variant='body2' sx={{ fontWeight: "bold" }}>
         To continue booking your car rental, you must{" "}
         <Typography
-          component="a"
-          color="primary"
+          component='a'
+          color='primary'
           sx={{ textDecoration: "underline", cursor: "pointer" }}
+          onClick={downloadContract}
         >
           sign your contract
         </Typography>{" "}
@@ -54,9 +60,11 @@ export default function CarInformation() {
         }}
       >
         <Button
-          color="primary"
-          variant="contained"
-          onClick={downloadContract}
+          color='primary'
+          variant='contained'
+          onClick={() =>
+            openInNewTab("https://trustprovider.signer.eudiw.dev/login")
+          }
           startIcon={<RightBoxArrowIcon />}
           sx={{ p: 2, fontWeight: "bold" }}
         >

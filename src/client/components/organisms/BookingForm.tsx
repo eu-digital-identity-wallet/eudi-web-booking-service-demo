@@ -43,7 +43,7 @@ export const BookingForm: React.FC = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <FormProvider {...methods}>
         <Box
-          component="form"
+          component='form'
           onSubmit={methods.handleSubmit(onSubmit)}
           sx={{
             display: "flex",
@@ -74,13 +74,14 @@ export const BookingForm: React.FC = () => {
                 bgcolor: "neutral.50",
                 color: "text.primary",
                 fontWeight: "bold",
-                maxWidth: 312,
                 textAlign: "center",
                 margin: "auto",
               }}
             >
-              To continue booking your travel plan, issue the requested
-              credentials using EUDI Wallet:
+              To continue booking your travel plan, <br />
+              present the requested attestations (PID, PhotoID and/or mDL)
+              <br />
+              using the EUDI Wallet
             </Box>
             <Box
               sx={{
@@ -94,9 +95,9 @@ export const BookingForm: React.FC = () => {
             >
               {deviceType === "mobile" ? (
                 <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
+                  variant='contained'
+                  color='primary'
+                  type='submit'
                   sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -104,20 +105,20 @@ export const BookingForm: React.FC = () => {
                     p: 2,
                   }}
                 >
-                  <Typography color="white">Launch EUDI Wallet</Typography>
+                  <Typography color='white'>Launch EUDI Wallet</Typography>
                   <Image
-                    loading="lazy"
-                    src="/images/eudiwallet.svg"
-                    alt="EUDI Wallet"
+                    loading='lazy'
+                    src='/images/eudiwallet.svg'
+                    alt='EUDI Wallet'
                     width={48}
                     height={48}
                   />
                 </Button>
               ) : (
                 <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
+                  variant='contained'
+                  color='primary'
+                  type='submit'
                   sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -143,9 +144,9 @@ export const BookingForm: React.FC = () => {
                     </Typography>
                   </Box>
                   <Image
-                    loading="lazy"
-                    src="/images/qrcode.svg"
-                    alt="QR Code"
+                    loading='lazy'
+                    src='/images/qrcode.svg'
+                    alt='QR Code'
                     width={41}
                     height={41}
                   />
