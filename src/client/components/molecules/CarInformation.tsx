@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
+import CarRentalIcon from "../atoms/CarRentalIcon";
 import RightBoxArrowIcon from "../atoms/RightBoxArrowIcon";
 
 export default function CarInformation() {
@@ -18,7 +19,18 @@ export default function CarInformation() {
         flexDirection: "column",
       }}
     >
-      <Typography fontWeight={"bold"}>Car rental information</Typography>
+      <Box
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "4px",
+        }}
+      >
+        <CarRentalIcon />
+        <Typography fontWeight={"bold"}>Car rental information</Typography>
+      </Box>
+
       {/* Car Image and Information */}
 
       <Image src="/images/car.png" alt="car" width={217} height={145} />

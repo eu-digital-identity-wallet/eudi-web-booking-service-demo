@@ -1,6 +1,6 @@
-import React from "react";
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import Image from "next/image";
+import React from "react";
 
 interface NavItem {
   icon: string;
@@ -63,7 +63,12 @@ const Navigation: React.FC = () => {
           />
         </IconButton>
         <IconButton>
-          <Image src="/images/bell.svg" width={24} height={24} alt="Notifications" />
+          <Image
+            src="/images/bell.svg"
+            width={24}
+            height={24}
+            alt="Notifications"
+          />
         </IconButton>
 
         <Box display="flex" gap={1} alignItems="center">
@@ -89,7 +94,13 @@ const Navigation: React.FC = () => {
         }}
       >
         {navItems.map((item, index) => (
-          <Box key={index} display="flex" gap={1} alignItems="center">
+          <Box
+            sx={{ cursor: "pointer" }}
+            key={index}
+            display="flex"
+            gap={1}
+            alignItems="center"
+          >
             <Image
               src={item.icon}
               width={24}

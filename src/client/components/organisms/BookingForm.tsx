@@ -25,7 +25,6 @@ export const BookingForm: React.FC = () => {
   const deviceType = useAppStore((state) => state.deviceType);
 
   const onSubmit = async (data: BookingDto) => {
-    console.log(data);
     await createBookingAsync(data);
   };
 
@@ -97,6 +96,7 @@ export const BookingForm: React.FC = () => {
                 <Button
                   variant="contained"
                   color="primary"
+                  type="submit"
                   sx={{
                     display: "flex",
                     flexDirection: "column",

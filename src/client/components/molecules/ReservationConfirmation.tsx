@@ -1,4 +1,4 @@
-import { useBookingStore } from "@/client/store";
+import { ModalStatus, useAppStore, useBookingStore } from "@/client/store";
 import { BookingDetailsDto } from "@/shared";
 import {
   Box,
@@ -9,7 +9,9 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import AccommodationIcon from "../atoms/AccommodationIcon";
 import CopyIcon from "../atoms/CopyIcon";
+import { useEffect } from "react";
 
 type Props = { details: BookingDetailsDto; id: string; deviceType: string };
 
@@ -26,24 +28,36 @@ export default function ReservationConfirmation({
     reservationDate,
     hotel,
   } = details;
-  const { isLoading, issueConfirmationAsync } = useBookingStore();
+
+  const { changeModalStatus, modal } = useAppStore(); // Get modal state
+  const { isLoading, issueConfirmationAsync, issueConfirmationRes } = useBookingStore();
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(id);
     toast.info("successfully copied to clipboard");
   };
+
   const issueConfirmation = async () => {
-    if (deviceType === "mobile") {
-      // window.location.href = bookingCreateRes?.url; // Navigate to the confirmation page
-    } else {
-      await issueConfirmationAsync(id);
-    }
+    await issueConfirmationAsync(id);
   };
+
+  
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <Typography fontWeight={"bold"}>
-        Here is your resenvation confirmation
-      </Typography>
+      <Box
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "4px",
+        }}
+      >
+        <AccommodationIcon />
+        <Typography fontWeight={"bold"}>
+          Here is your resenvation confirmation
+        </Typography>
+      </Box>
+
       {/* Hotel Details */}
       <Box sx={{ mt: 2 }}>
         <Typography fontWeight="bold" color="green">

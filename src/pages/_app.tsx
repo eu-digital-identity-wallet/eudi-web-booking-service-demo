@@ -1,11 +1,12 @@
 import { AppCacheProvider } from "@mui/material-nextjs/v14-pagesRouter";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-import type { AppProps } from "next/app";
+import type { AppContext, AppProps } from "next/app";
 import "react-toastify/dist/ReactToastify.css";
 
 import AppLayout from "@/client/components/organisms/AppLayout";
 import { createTheme } from "@mui/material/styles";
+import { validateEnv } from "@/env.mjs";
 
 const theme = createTheme({
   palette: {
@@ -89,6 +90,7 @@ const theme = createTheme({
     },
   },
 });
+
 
 export default function App(props: AppProps) {
   const { Component, ...rest } = props;
