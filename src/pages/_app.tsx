@@ -1,20 +1,19 @@
 import { AppCacheProvider } from "@mui/material-nextjs/v14-pagesRouter";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-import type { AppContext, AppProps } from "next/app";
+import type { AppProps } from "next/app";
 import "react-toastify/dist/ReactToastify.css";
 
 import AppLayout from "@/client/components/organisms/AppLayout";
 import { createTheme } from "@mui/material/styles";
-import { validateEnv } from "@/env.mjs";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#003366", // Deep blue
+      main: "#003680", // Deep blue
     },
     secondary: {
-      main: "#FFD700", // Yellow/Orange
+      main: "#FEB902", // Yellow/Orange
     },
     background: {
       default: "#f5f5f5",
@@ -30,26 +29,33 @@ const theme = createTheme({
     h1: {
       fontSize: "2.5rem",
       fontWeight: 700,
-      color: "#003366",
+      color: "#003680",
     },
     h2: {
       fontSize: "2rem",
       fontWeight: 600,
-      color: "#003366",
+      color: "#003680",
     },
     body1: {
       fontSize: "1rem",
-      color: "#333333",
+      color: "#000000",
     },
     button: {
       textTransform: "none",
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          minWidth: "412px",
+        },
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: "#003366",
+          backgroundColor: "#003680",
           boxShadow: "none",
           borderBottom: "1px solid #dddddd",
         },
@@ -62,10 +68,10 @@ const theme = createTheme({
           padding: "10px 20px",
         },
         containedPrimary: {
-          backgroundColor: "#003366",
+          backgroundColor: "#0070C2",
           color: "#ffffff",
           "&:hover": {
-            backgroundColor: "#002244",
+            backgroundColor: "#003680",
           },
         },
       },
@@ -82,15 +88,14 @@ const theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         h5: {
-          fontSize: "1.5rem",
+          fontSize: "1.3rem",
           fontWeight: 600,
-          color: "#003366",
+          color: "#000000",
         },
       },
     },
   },
 });
-
 
 export default function App(props: AppProps) {
   const { Component, ...rest } = props;

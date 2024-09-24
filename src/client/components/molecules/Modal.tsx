@@ -17,8 +17,8 @@ const Modal: React.FC<ModalProps> = ({ title, content, handleClose }) => {
     <MuiModal
       open={modal === ModalStatus.OPEN}
       onClose={handleClose}
-      aria-labelledby="modal-title"
-      aria-describedby="modal-description"
+      aria-labelledby='modal-title'
+      aria-describedby='modal-description'
     >
       <Box
         sx={{
@@ -31,18 +31,24 @@ const Modal: React.FC<ModalProps> = ({ title, content, handleClose }) => {
           width: { xs: "90%", md: "40%" },
         }}
       >
-        <Typography id="modal-title" variant="h5" fontWeight="bold" mb={2}>
+        <Typography
+          id='modal-title'
+          variant='h5'
+          fontWeight='bold'
+          mb={2}
+          textAlign={"center"}
+        >
           {title} {/* Display the title prop */}
         </Typography>
 
-        <Box id="modal-description" sx={{ textAlign: "center", mb: 4 }}>
+        <Box id='modal-description' sx={{ textAlign: "center", mb: 4 }}>
           {content} {/* Display the content prop */}
         </Box>
 
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             onClick={handleClose}
             sx={{ px: 4, py: 2 }}
           >
