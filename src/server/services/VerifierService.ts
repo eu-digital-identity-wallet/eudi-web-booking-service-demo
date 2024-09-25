@@ -1,8 +1,11 @@
 import { env } from "@/env.mjs";
 import { VerificationResponse } from "@/shared/interfaces";
 import { Inject, Service } from "typedi";
-import { Payload } from "../types"; // Assuming Payload is defined in a types file
-import { DataDecoderService } from "./DataDecoderService"; // Inject the new DataDecoderService
+import {FieldConstraint, InputDescriptor, Payload} from "../types"; // Assuming Payload is defined in a types file
+import { DataDecoderService } from "./DataDecoderService";
+import {Attribute, MsoMdoc} from "@/server/services/model/mso-mdoc";
+import {MDL_MSO_MDOC} from "@/server/services/model/mdl-mso_mdoc";
+import {PHOTO_ID_MSO_MDOC} from "@/server/services/model/photo_id-mso_mdoc"; // Inject the new DataDecoderService
 
 @Service()
 export class VerifierService {
@@ -46,30 +49,8 @@ export class VerifierService {
       presentation_definition: {
         id: bookingId,
         input_descriptors: [
-          {
-            id: "org.iso.18013.5.1.mDL",
-            name: "Mobile Driving Licence",
-            purpose: "We need to verify your mobile driving licence",
-            format: {
-              mso_mdoc: { alg: ["ES256", "ES384", "ES512"] },
-            },
-            constraints: {
-              fields: [
-                {
-                  path: ["$['org.iso.18013.5.1']['family_name']"],
-                  intent_to_retain: true,
-                },
-                {
-                  path: ["$['org.iso.18013.5.1']['given_name']"],
-                  intent_to_retain: true,
-                },
-                {
-                  path: ["$['org.iso.18013.5.1']['birth_date']"],
-                  intent_to_retain: true,
-                },
-              ],
-            },
-          },
+          this.mdlInputDescriptor(),
+          this.photoIdInputDescriptor(),
         ],
       },
       jar_mode: "by_reference",
@@ -82,6 +63,60 @@ export class VerifierService {
     }
 
     return payload;
+  }
+
+  private photoIdInputDescriptor(): InputDescriptor {
+    return {
+      id: PHOTO_ID_MSO_MDOC.doctype,
+      name: PHOTO_ID_MSO_MDOC.name,
+      purpose: "We need to verify your photo identifier",
+      format: {
+        mso_mdoc: { alg: ["ES256", "ES384", "ES512"] },
+      },
+      constraints: {
+        fields:
+            this.fieldConstraints( PHOTO_ID_MSO_MDOC, [
+              "family_name",
+              "given_name",
+              "birth_date"
+            ])
+      },
+    }
+  }
+
+  private mdlInputDescriptor(): InputDescriptor {
+    return {
+      id: MDL_MSO_MDOC.doctype,
+      name: MDL_MSO_MDOC.name,
+      purpose: "We need to verify your mobile driving licence",
+      format: {
+        mso_mdoc: { alg: ["ES256", "ES384", "ES512"] },
+      },
+      constraints: {
+        fields: this.fieldConstraints(MDL_MSO_MDOC),
+      },
+    }
+  }
+
+  private fieldConstraints(document: MsoMdoc, includeAttributes?: string[]): FieldConstraint[] {
+    const fieldConstraints: FieldConstraint[] = [];
+    document.attributes.forEach((attribute: Attribute) => {
+      if (typeof includeAttributes == 'undefined' || includeAttributes.includes(attribute.value)) {
+        fieldConstraints.push(this.fieldConstraint(document, attribute.value));
+      }
+    })
+    return fieldConstraints;
+  }
+
+  private fieldConstraint(document: MsoMdoc, attribute: string, intentToRetainOptional?: boolean): FieldConstraint {
+    let intentToRetain = false;
+    if (typeof intentToRetainOptional !== 'undefined' && intentToRetainOptional) {
+      intentToRetain = true
+    }
+    return {
+      path: ['$[\''+document.namespace+'\'][\''+attribute+'\']'],
+      intent_to_retain: intentToRetain
+    }
   }
 
   public async checkVerification(
@@ -143,13 +178,13 @@ export class VerifierService {
     let info = { family_name: "", given_name: "", date_of_birth: "" };
     for (const doc of decodedData?.documents) {
       let tmpPersonInfo = this.extractInfoFromAttestation(doc)
-      if (tmpPersonInfo.family_name) {
+      if (typeof tmpPersonInfo.family_name !== 'undefined' && tmpPersonInfo.family_name) {
         info.family_name = tmpPersonInfo.family_name;
       }
-      if (tmpPersonInfo.date_of_birth) {
+      if (typeof tmpPersonInfo.date_of_birth !== 'undefined' &&  tmpPersonInfo.date_of_birth) {
         info.date_of_birth = tmpPersonInfo.date_of_birth;
       }
-      if (tmpPersonInfo.given_name) {
+      if (typeof tmpPersonInfo.given_name !== 'undefined' && tmpPersonInfo.given_name) {
         info.given_name = tmpPersonInfo.given_name;
       }
     }
