@@ -139,36 +139,54 @@ export class VerifierService {
     given_name: string | null;
     date_of_birth: string | null;
   } {
-    const issuerSigned = decodedData?.documents?.[0]?.issuerSigned;
-    const namespaces = issuerSigned?.nameSpaces?.["org.iso.18013.5.1"];
 
-    if (!namespaces)
-      return { family_name: null, given_name: null, date_of_birth: null };
+    let info = { family_name: "", given_name: "", date_of_birth: "" };
+    for (const doc of decodedData?.documents) {
+      let tmpPersonInfo = this.extractInfoFromAttestation(doc)
+      if (tmpPersonInfo.family_name) {
+        info.family_name = tmpPersonInfo.family_name;
+      }
+      if (tmpPersonInfo.date_of_birth) {
+        info.date_of_birth = tmpPersonInfo.date_of_birth;
+      }
+      if (tmpPersonInfo.given_name) {
+        info.given_name = tmpPersonInfo.given_name;
+      }
+    }
+    return info;
+  }
+
+  private extractInfoFromAttestation(document: any): {
+    family_name: string | null;
+    given_name: string | null;
+    date_of_birth: string | null;
+  } {
+    let namespaces = document.issuerSigned.nameSpaces;
 
     let familyName: string | null = null;
     let givenName: string | null = null;
     let dateOfBirth: string | null = null;
 
-    for (const element of namespaces) {
-      const decodedElement = this.dataDecoderService.decodeCborData(
-        element.value
-      );
-
-      if (decodedElement) {
-        switch (decodedElement.elementIdentifier) {
-          case "family_name":
-            familyName = decodedElement.elementValue;
-            break;
-          case "given_name":
-            givenName = decodedElement.elementValue;
-            break;
-          case "birth_date":
-            dateOfBirth = decodedElement.elementValue.value;
-            break;
+    Object.keys(namespaces).forEach((it: string) => {
+      let namespace = namespaces[it]
+      for (const element of namespace) {
+        const decodedElement = this.dataDecoderService.decodeCborData(element.value);
+        if (decodedElement) {
+          switch (decodedElement.elementIdentifier) {
+            case "family_name":
+              familyName = decodedElement.elementValue;
+              break;
+            case "given_name":
+              givenName = decodedElement.elementValue;
+              break;
+            case "birth_date":
+              dateOfBirth = decodedElement.elementValue.value;
+              break;
+          }
         }
       }
-    }
 
+    })
     return {
       family_name: familyName,
       given_name: givenName,
