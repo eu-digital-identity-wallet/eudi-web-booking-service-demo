@@ -2,7 +2,7 @@ import {MsoMdoc} from "./mso-mdoc";
 
 export const PHOTO_ID_MSO_MDOC: MsoMdoc = {
     name: 'Photo Identifier',
-    doctype: 'org.iso.23220.2.photoid',
+    doctype: 'org.iso.23220.2.photoid.1',
     namespace: 'org.iso.23220.2.photoid.1',
     attributes: [
         {value: 'issuing_authority', text: 'Issuing authority'},
