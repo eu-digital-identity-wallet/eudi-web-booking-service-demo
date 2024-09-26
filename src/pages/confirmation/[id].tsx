@@ -146,17 +146,17 @@ export const getServerSideProps: GetServerSideProps = async (
     }
 
     const bookingDetails = await bookingService.bookingDetails(bookingID);
-
-    if (bookingDetails) {
-      properties = {
-        bookingID,
-        deviceType,
-        ...bookingDetails,
-        hasError: false,
-      };
-    } else {
+    if(!bookingDetails?.guestFamilyName || !bookingDetails?.guestGivenName){
       return { notFound: true };
     }
+    
+    properties = {
+      bookingID,
+      deviceType,
+      ...bookingDetails,
+      hasError: false,
+    };
+    
   } catch (error) {
     return { notFound: true };
   }
