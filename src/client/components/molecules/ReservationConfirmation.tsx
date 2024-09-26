@@ -26,6 +26,8 @@ export default function ReservationConfirmation({
     numberOfGuests,
     reservationDate,
     hotel,
+    guestFamilyName,
+    guestGivenName
   } = details;
 
   const { changeModalStatus, modal } = useAppStore(); // Get modal state
@@ -56,15 +58,23 @@ export default function ReservationConfirmation({
           Here is your resenvation confirmation
         </Typography>
       </Box>
-
-      {/* Hotel Details */}
+      {/* Booking Details */}
       <Box sx={{ mt: 2 }}>
         <Typography fontWeight='bold' color='green'>
           {hotel}
         </Typography>
-
+        <Box sx={{ display: "flex", mb:1, mt:1 }}>
+          <Box sx={{ mr: 5 , width:'50%'}}>
+            <Typography color='black'>Last Name</Typography>
+            <Typography color='primary'>{guestFamilyName}</Typography>
+          </Box>
+          <Box>
+            <Typography color='black'>First Name</Typography>
+            <Typography color='primary'>{guestGivenName}</Typography>
+          </Box>
+        </Box>
         <Box sx={{ display: "flex" }}>
-          <Box sx={{ mr: 5 }}>
+          <Box sx={{ mr: 5 , width:'50%'}}>
             <Typography color='black'>Check-in</Typography>
             <Typography color='primary'>{checkIn}</Typography>
           </Box>
