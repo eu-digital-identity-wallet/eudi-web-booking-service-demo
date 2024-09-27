@@ -79,7 +79,7 @@ export const BookingForm: React.FC = () => {
               }}
             >
               To continue booking your travel plan, <br />
-              present the requested attestations (PID, PhotoID and/or mDL)
+              present the requested attestations (PhotoID and/or mDL)
               <br />
               using the EUDI Wallet
             </Box>
