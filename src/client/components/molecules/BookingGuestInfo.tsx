@@ -33,8 +33,8 @@ export const BookingGuestInfo: React.FC = () => {
           render={({ field }) => (
             <DatePickerField
               label="Check-in Date *"
-              value={field.value ? new Date(field.value) : null}
-              onChange={(date) => field.onChange(date ? date.toISOString() : '')}
+              value={field.value ? new Date(field.value ) : null}
+              onChange={(date) => field.onChange((date) ? new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString() : '' )}
               error={errors.checkIn?.message as string | undefined}
             />
           )}
@@ -49,7 +49,7 @@ export const BookingGuestInfo: React.FC = () => {
             <DatePickerField
               label="Check-out Date *"
               value={field.value ? new Date(field.value) : null}
-              onChange={(date) => field.onChange(date ? date.toISOString() : '')}
+              onChange={(date) => field.onChange( (date) ? new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString() : '')}
               error={errors.checkOut?.message as string | undefined}
             />
           )}
