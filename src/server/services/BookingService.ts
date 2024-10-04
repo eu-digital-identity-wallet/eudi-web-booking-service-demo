@@ -35,7 +35,8 @@ export class BookingService {
 
     const verificationData = await this.verifier.initVerification(
       newBooking.id,
-      isMobile
+      isMobile,
+      newBooking.carRental
     );
 
     if (isMobile) {
