@@ -15,9 +15,10 @@ export class VerifierService {
 
   public async initVerification(
     bookingId: string,
-    isMobile: boolean
+    isMobile: boolean,
+    carRental: boolean,
   ): Promise<{ requestUri: string; TransactionId: string }> {
-    const payload: Payload = this.buildPayload(bookingId, isMobile);
+    const payload: Payload = this.buildPayload(bookingId, isMobile, carRental);
 
     try {
       const response = await fetch(`${env.VERIFIER_API_URL}/ui/presentations`, {
@@ -43,14 +44,13 @@ export class VerifierService {
     }
   }
 
-  private buildPayload(bookingId: string, isMobile: boolean): Payload {
+  private buildPayload(bookingId: string, isMobile: boolean, carRental:boolean ): Payload {
     const payload: Payload = {
       type: "vp_token",
       presentation_definition: {
         id: bookingId,
         input_descriptors: [
-          this.mdlInputDescriptor(),
-          this.photoIdInputDescriptor(),
+          this.photoIdInputDescriptor()
         ],
       },
       jar_mode: "by_reference",
@@ -58,10 +58,13 @@ export class VerifierService {
       nonce: "eaaace85-4d77-45dc-b57a-9043a548ab86",
     };
 
+    if(carRental){
+      payload.presentation_definition.input_descriptors.push(this.mdlInputDescriptor());
+    }
+
     if (isMobile) {
       payload.wallet_response_redirect_uri_template = `${env.NEXT_PUBLIC_APP_URI}/confirmation/${bookingId}?response_code={RESPONSE_CODE}`;
     }
-
     return payload;
   }
 
