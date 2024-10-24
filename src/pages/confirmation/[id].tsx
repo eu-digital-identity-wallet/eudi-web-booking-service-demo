@@ -26,7 +26,7 @@ export default function ConfirmationPage(props: AppProps) {
   return (
     <Box sx={{ width: "100%", maxWidth: "100%", pb: 1, pt: 1, pl: 3, pr: 3 }}>
       <Modal
-        title={`${(deviceType==='desktop')?'Scan':'Click the link'} to issue your reservation confirmation to EUDI Wallet`}
+        title={`${(deviceType==='desktop')?'Scan':'Click the link'} to add to EUDI Wallet`}
         content={
           <Box>
             {issueConfirmationRes && (
