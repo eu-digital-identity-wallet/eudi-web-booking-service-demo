@@ -139,7 +139,7 @@ export default function ReservationConfirmation({
           }
           onClick={issueConfirmation}
         >
-          Issue your reservation confirmation to EUDI Wallet
+          Add to EUDI Wallet
         </Button>
       </Box>
     </Box>

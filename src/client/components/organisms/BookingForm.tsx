@@ -78,10 +78,10 @@ export const BookingForm: React.FC = () => {
                 margin: "auto",
               }}
             >
-              To continue booking your travel plan, <br />
-              present the requested attestations (PhotoID and/or mDL)
+              To continue with your reservation, <br />
+              share your identification documents
               <br />
-              using the EUDI Wallet
+              from your EUDI Wallet
             </Box>
             <Box
               sx={{
