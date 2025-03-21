@@ -34,7 +34,7 @@ export class VerifierService {
       const data = await response.json();
       const clientId = encodeURIComponent(data.client_id);
       const requestURI = encodeURIComponent(data.request_uri);
-      const TransactionId = encodeURIComponent(data.presentation_id);
+      const TransactionId = encodeURIComponent(data.transaction_id);
       const requestUri = `eudi-openid4vp://?client_id=${clientId}&request_uri=${requestURI}`;
 
       return { requestUri, TransactionId };
